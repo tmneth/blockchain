@@ -3,7 +3,6 @@
 #include <iostream>
 #include <random>
 #include "hash.h"
-#include "utils.h"
 
 class User {
 

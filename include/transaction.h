@@ -13,16 +13,26 @@ private:
 
 public:
 
+    Transaction() = default;
+
     void setId(int id);
 
     void setRecipient(std::string_view hash);
 
     void setSender(std::string_view hash);
 
+    void setAmount(double amount);
+
     int getId();
 
     std::string getRecipient();
 
     std::string getSender();
+
+    double getAmount();
+
+    friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
+
+    ~Transaction() = default;
 
 };
