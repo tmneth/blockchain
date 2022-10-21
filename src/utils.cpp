@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <random>
 #include "utils.h"
 
 double genRandAmount() {
@@ -8,9 +10,9 @@ double genRandAmount() {
     return amount(mt);
 }
 
-void genUsers(std::vector<User> &users) {
+std::vector<User> genUsers() {
 
-    users.reserve(1000);
+    std::vector<User> users(1000);
 
     for (int i = 1; i <= 1000; ++i) {
         User user;
@@ -21,12 +23,13 @@ void genUsers(std::vector<User> &users) {
         users.push_back(user);
     }
 
-    for (User u: users)
-        std::cout << u << std::endl;
-    
+//    for (User u: users)
+//        std::cout << u << std::endl;
+
+    return users;
 }
 
-void genPool(std::vector<User> users) {
+std::vector<Transaction> genPool(std::vector<User> &users) {
 
     std::vector<Transaction> pool;
 
@@ -50,7 +53,23 @@ void genPool(std::vector<User> users) {
         pool.push_back(transaction);
     }
 
-    for (Transaction t: pool)
-        std::cout << t << std::endl;
+//    for (Transaction t: pool)
+//        std::cout << t << std::endl;
 
+    return pool;
+
+}
+
+std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool) {
+
+    std::mt19937_64 random_engine{std::random_device{}()};
+    std::vector<Transaction> newPool;
+    std::ranges::sample(pool, std::back_inserter(newPool), 100, random_engine);
+
+//    for (Transaction t : newPool)
+//    {
+//        std::cout << t << std::endl;
+//    }
+
+    return newPool;
 }

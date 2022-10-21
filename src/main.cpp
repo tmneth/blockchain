@@ -1,14 +1,20 @@
-#include <iostream>
 #include "utils.h"
+#include "transaction.h"
 #include "user.h"
 
 int main() {
+    std::vector<Transaction> t;
+    std::vector<User> u;
 
-    std::vector<User> users;
+    u = genUsers();
 
-    genUsers(users);
+    t = genPool(u);
+    t = shrinkPool(t);
 
-    genPool(users);
+    for (Transaction pool : t)
+    {
+        std::cout << pool << std::endl;
+    }
 
     return 0;
 }

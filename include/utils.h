@@ -10,7 +10,10 @@
 #include "transaction.h"
 
 // generate 1000 random users
-void genUsers(std::vector<User> &users);
+std::vector<User> genUsers();
 
 // generate pool of 10000 transactions between prev generated users
-void genPool(std::vector<User> users);
+std::vector<Transaction> genPool(std::vector<User> &users);
+
+// select 100 random transactions from the pool
+std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool);
