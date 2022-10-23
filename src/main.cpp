@@ -1,20 +1,36 @@
 #include "utils.h"
-#include "transaction.h"
-#include "user.h"
+#include "blockchain.h"
 
-int main() {
-    std::vector<Transaction> t;
-    std::vector<User> u;
+void showHelpMessage() {
+    std::cerr
+            << "Please use one of the following commands:\n"
+            << "getblockchaininfo: Show information about blockchain\n"
+            << std::endl;
+}
 
-    u = genUsers();
+int main(int argc, char *argv[]) {
 
-    t = genPool(u);
-    t = shrinkPool(t);
+    Blockchain chain;
 
-    for (Transaction pool : t)
-    {
-        std::cout << pool << std::endl;
+    initBlockchain(chain);
+
+    if (argc == 1) {
+        showHelpMessage();
+        return 1;
+    }
+
+    for (int i = 0; i < argc; i++) {
+
+        std::string arg = argv[i];
+
+        if ((arg == "-h") || (arg == "--help")) {
+            showHelpMessage();
+            return 1;
+        } else if (arg == "getblockchaininfo") {
+            std::cout << chain << std::endl;
+        }
     }
 
     return 0;
+
 }
