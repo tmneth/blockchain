@@ -8,12 +8,12 @@
 
 #include "user.h"
 #include "transaction.h"
+#include "blockchain.h"
 
-// generate 1000 random users
-std::vector<User> genUsers();
+void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> users);
 
-// generate pool of 10000 transactions between prev generated users
-std::vector<Transaction> genPool(std::vector<User> &users);
+int getTransaction(std::vector<Transaction> &pool, int id);
 
-// select 100 random transactions from the pool
-std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool);
+void genUsers(std::vector<User> &users);
+
+void genPool(std::vector<User> &users, std::vector<Transaction> &pool);

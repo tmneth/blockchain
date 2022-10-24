@@ -15,20 +15,7 @@ private:
 
 public:
 
-    User() {
-        MYSHA hash;
-
-        std::random_device device;
-        std::mt19937 mt(device());
-        std::uniform_int_distribution<int> seed(10000, 1000000);
-
-        m_privateKey = hash(std::to_string(seed(mt)));
-        m_publicKey = hash(m_privateKey + m_name);
-    };
-
-    void setName(std::string_view name);
-
-    void setBalance(double balance);
+    User(std::string name, double balance);
 
     std::string getName();
 

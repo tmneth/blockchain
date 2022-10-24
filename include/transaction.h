@@ -9,6 +9,7 @@ private:
     int m_id{};
     std::string m_to{};
     std::string m_from{};
+    std::string m_hash{};
     double m_amount{};
 
 public:
@@ -21,6 +22,8 @@ public:
 
     void setSender(std::string_view hash);
 
+    void setHash();
+
     void setAmount(double amount);
 
     int getId();
@@ -28,6 +31,8 @@ public:
     std::string getRecipient();
 
     std::string getSender();
+
+    std::string getHash();
 
     double getAmount();
 

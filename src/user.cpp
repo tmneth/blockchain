@@ -1,11 +1,18 @@
 #include "user.h"
 
-void User::setName(std::string_view name) {
-    this->m_name = name;
-}
+User::User(std::string name, double balance) {
+    MYSHA hash;
 
-void User::setBalance(double balance) {
-    this->m_balance = balance;
+    std::random_device device;
+    std::mt19937 mt(device());
+    std::uniform_int_distribution<int> seed(10000, 1000000);
+
+    m_privateKey = hash(std::to_string(seed(mt)));
+    m_publicKey = hash(m_privateKey + m_name);
+
+    m_name = name;
+    m_balance = balance;
+
 };
 
 std::string User::getName() {
@@ -21,7 +28,7 @@ double User::getBalance() {
 };
 
 std::ostream &operator<<(std::ostream &out, User user) {
-    out << "User: " << user.getName() << "\nPublic key: " << user.getPublicKey() << "\nBalance: " << user.getBalance()
+    out << "Name: " << user.getName() << "\nPublic key: " << user.getPublicKey() << "\nBalance: " << user.getBalance()
         << std::endl;
     return out;
 }
