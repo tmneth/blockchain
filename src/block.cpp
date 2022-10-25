@@ -6,17 +6,7 @@ Block::Block(std::string prevHash, std::string dataHash) {
     m_timestamp = time(0);
 }
 
-std::string Block::getPrevHash() const { return m_prevHash; };
-
-std::string Block::getDataHash() const { return m_dataHash; };
-
 std::string Block::getBlockHash() const { return m_blockHash; };
-
-int Block::getTimestamp() const { return m_timestamp; };
-
-int Block::getDifficulty() const { return m_difficulty; }
-
-int Block::getNonce() const { return m_nonce; };
 
 void Block::setData(std::vector<Transaction> t) {
     m_data = t;
@@ -28,12 +18,12 @@ int Block::getDataSize() {
 
 std::ostream &operator<<(std::ostream &out, Block block) {
 
-    out << "\nBlock hash: " << block.getBlockHash()
-        << "\nPrevious hash: " << block.getPrevHash()
-        << "\nData hash: " << block.getDataHash()
-        << "\nTimestamp: " << block.getTimestamp()
-        << "\nNonce: " << block.getNonce()
-        << "\nDifficulty: " << block.getDifficulty()
+    out << "\nBlock hash: " << block.m_blockHash
+        << "\nPrevious hash: " << block.m_prevHash
+        << "\nData hash: " << block.m_dataHash
+        << "\nTimestamp: " << block.m_timestamp
+        << "\nNonce: " << block.m_nonce
+        << "\nDifficulty: " << block.m_difficulty
         << "\nNumber of transactions: " << block.getDataSize() << std::endl;
 
     return out;

@@ -25,17 +25,7 @@ public:
 
     Block(std::string prevHash, std::string dataHash);
 
-    std::string getPrevHash() const;
-
-    std::string getDataHash() const;
-
     std::string getBlockHash() const;
-
-    int getTimestamp() const;
-
-    int getNonce() const;
-
-    int getDifficulty() const;
 
     void setData(std::vector<Transaction> t);
 

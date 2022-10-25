@@ -42,10 +42,10 @@ double Transaction::getAmount() const {
 }
 
 std::ostream &operator<<(std::ostream &out, Transaction transaction) {
-    out << "\nId: " << transaction.getId()
-        << "\nFrom: " << transaction.getSender()
-        << "\nTo: " << transaction.getRecipient()
-        << "\nTransaction hash: " << transaction.getHash()
-        << "\nAmount: " << transaction.getAmount() << std::endl;
+    out << "\nId: " << transaction.m_id
+        << "\nFrom: " << transaction.m_from
+        << "\nTo: " << transaction.m_to
+        << "\nTransaction hash: " << transaction.m_hash
+        << "\nAmount: " << transaction.m_amount << std::endl;
     return out;
 }

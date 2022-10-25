@@ -17,8 +17,6 @@ public:
 
     User(std::string name, double balance);
 
-    std::string getName() const;
-
     std::string getPublicKey() const;
 
     double getBalance();
