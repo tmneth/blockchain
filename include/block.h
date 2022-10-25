@@ -34,7 +34,7 @@ public:
 
     int getDataSize();
 
-    const std::string hashBlock();
+    std::string hashBlock();
 
     bool mine();
 

@@ -1,16 +1,10 @@
 #include "blockchain.h"
 
-void Blockchain::appendBlock(Block block) {
-    m_chain.push_back(block);
-}
+void Blockchain::appendBlock(Block block) { m_chain.push_back(block); }
 
-std::vector<Block> Blockchain::getChain() {
-    return m_chain;
-}
+std::vector<Block> Blockchain::getChain() { return m_chain; }
 
-std::string Blockchain::getPrevHash() {
-    return m_chain[m_chain.size() - 1].getBlockHash();
-}
+std::string Blockchain::getPrevHash() { return m_chain[m_chain.size() - 1].getBlockHash(); }
 
 void Blockchain::getBlockInfo(std::string blockhash) {
 
@@ -26,7 +20,9 @@ void Blockchain::getBlockInfo(std::string blockhash) {
 }
 
 std::ostream &operator<<(std::ostream &out, Blockchain chain) {
+
     for (const Block &block: chain.getChain())
         out << block;
     return out;
+
 }

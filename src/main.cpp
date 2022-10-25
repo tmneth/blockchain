@@ -4,7 +4,7 @@
 
 std::vector<std::string> getArgs(std::string text) {
 
-    std::vector<std::string> words;
+    std::vector<std::string> args;
 
     std::string::size_type beg = 0, end;
     do {
@@ -12,21 +12,23 @@ std::vector<std::string> getArgs(std::string text) {
         if (end == std::string::npos) {
             end = text.size();
         }
-        words.emplace_back(text.substr(beg, end - beg));
+        args.emplace_back(text.substr(beg, end - beg));
         beg = end + 1;
     } while (beg < text.size());
 
-    return words;
+    return args;
 
 }
 
 void showHelpMessage() {
+
     std::cerr
             << "\nAvailable commands: \n"
             << "help: Show this help message\n"
             << "getblock <blockhash>: Retrieve the details of a mined block \n"
             << "gettransaction <transactionid>: Retrieve the details of a transaction \n"
             << "stop: exit the program\n";
+
 }
 
 int main() {
@@ -45,24 +47,23 @@ int main() {
     do {
         std::string userArg;
         getline(std::cin, userArg);
-        std::vector<std::string> words = getArgs(userArg);
+        std::vector<std::string> args = getArgs(userArg);
 
-        if (words[0] == "help") {
+        if (args[0] == "help" || args.size() > 2) {
             showHelpMessage();
-        } else if (words[0] == "getblock") {
-            std::string hash = words[1];
+        } else if (args[0] == "getblock") {
+            std::string hash = args[1];
             chain.getBlockInfo(hash);
-        } else if (words[0] == "gettransaction") {
-            pool.getTransactionInfo(stoi(words[1]));
-        } else if (words[0] == "stop") {
+        } else if (args[0] == "gettransaction") {
+            pool.getTransactionInfo(stoi(args[1]));
+        } else if (args[0] == "stop") {
             input = false;
         } else {
             std::cout << "Command not found. Try again" << std::endl;
         }
 
     } while (input);
-
-
+    
     return 0;
 
 }

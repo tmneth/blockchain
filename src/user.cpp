@@ -1,6 +1,7 @@
 #include "user.h"
 
 User::User(std::string name, double balance) {
+
     MYSHA hash;
 
     std::random_device device;
@@ -15,17 +16,11 @@ User::User(std::string name, double balance) {
 
 };
 
-void User::setBalance(double balance) {
-    m_balance = balance;
-}
+void User::setBalance(double balance) { m_balance = balance; }
 
-std::string User::getPublicKey() const {
-    return m_publicKey;
-};
+std::string User::getPublicKey() const { return m_publicKey; };
 
-double User::getBalance() {
-    return m_balance;
-};
+double User::getBalance() { return m_balance; };
 
 std::ostream &operator<<(std::ostream &out, User user) {
 

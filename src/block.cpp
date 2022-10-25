@@ -1,20 +1,18 @@
 #include "block.h"
 
 Block::Block(std::string prevHash, std::string dataHash) {
+
     m_dataHash = dataHash;
     m_prevHash = prevHash;
     m_timestamp = time(0);
+    
 }
 
 std::string Block::getBlockHash() const { return m_blockHash; };
 
-void Block::setData(Pool p) {
-    m_data = p;
-};
+void Block::setData(Pool pool) { m_data = pool; };
 
-int Block::getDataSize() {
-    return m_data.getPoolSize();
-}
+int Block::getDataSize() { return m_data.getPoolSize(); }
 
 std::ostream &operator<<(std::ostream &out, Block block) {
 
@@ -27,17 +25,19 @@ std::ostream &operator<<(std::ostream &out, Block block) {
         << "\nNumber of transactions: " << block.getDataSize() << std::endl;
 
     return out;
+
 }
 
+std::string Block::hashBlock() {
 
-const std::string Block::hashBlock() {
-    MYSHA mysha;
+    MYSHA hash;
 
-    std::string hash = mysha(
+    std::string blockhash = hash(
             m_prevHash + m_dataHash + std::to_string(m_timestamp) +
             std::to_string(m_nonce));
 
-    return hash;
+    return blockhash;
+
 }
 
 bool Block::mine() {

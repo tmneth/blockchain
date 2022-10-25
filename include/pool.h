@@ -4,9 +4,10 @@
 #include <vector>
 #include <algorithm>
 #include "transaction.h"
+#include "user.h"
 
 class Pool {
-    
+
 private:
 
     std::vector<Transaction> m_pool;
@@ -17,13 +18,11 @@ public:
 
     int getPoolSize();
 
-    void addTransaction(Transaction transaction);
+    void addTransaction(const Transaction& transaction);
 
     void removeTransaction(int txId);
 
-    void removeByTxId(int txId);
-
-    std::vector<Transaction> getPool();
+    void processTransactions(std::vector<User> &users);
 
     Transaction getTransaction(int txId);
 

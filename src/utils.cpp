@@ -59,6 +59,7 @@ Pool shrinkPool(Pool &pool) {
     Pool newPool;
 
     for (int i = 0; i < 100; ++i) {
+
         std::random_device device;
         std::mt19937 mt(device());
         std::uniform_int_distribution<int> seed(0, pool.getPoolSize() - 1);
@@ -74,43 +75,12 @@ Pool shrinkPool(Pool &pool) {
 
 }
 
-int findUser(std::string publicKey, std::vector<User> &users) {
-
-    auto it = find_if(users.begin(), users.end(),
-                      [&publicKey](User &user) { return user.getPublicKey() == publicKey; });
-    int index = std::distance(users.begin(), it);
-
-    return index;
-
-}
-
-void processTransactions(Pool pool, std::vector<User> &users) {
-
-    std::string publicKey;
-    int index;
-
-    for (Transaction t: pool.getPool()) {
-
-        index = findUser(t.getRecipient(), users);
-        users[index].setBalance(users[index].getBalance() + t.getAmount());
-
-        index = findUser(t.getSender(), users);
-        users[index].setBalance(users[index].getBalance() - t.getAmount());
-
-        int txId = t.getId();
-
-        pool.removeByTxId(txId);
-
-    }
-
-}
-
 void initBlockchain(Blockchain &chain, Pool pool, std::vector<User> users) {
 
     Pool newPool;
 
     std::string dataHash;
-    
+
     for (int i = 1; pool.getPoolSize(); i++) {
 
         newPool = shrinkPool(pool);
@@ -124,7 +94,7 @@ void initBlockchain(Blockchain &chain, Pool pool, std::vector<User> users) {
         if (newBlock.mine())
             chain.appendBlock(newBlock);
 
-        processTransactions(newPool, users);
+        newPool.processTransactions(users);
     }
 
     std::cout << chain << std::endl;

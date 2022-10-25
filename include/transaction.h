@@ -13,9 +13,11 @@ private:
     std::string m_hash{};
     double m_amount{};
 
+    time_t m_timestamp{};
+
 public:
 
-    Transaction() = default;
+    Transaction() : m_timestamp(time(0)) {};
 
     void setId(int id);
 

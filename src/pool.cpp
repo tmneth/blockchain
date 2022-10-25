@@ -2,6 +2,7 @@
 
 
 void Pool::getTransactionInfo(int txId) {
+
     auto it = find_if(m_pool.begin(), m_pool.end(),
                       [&txId](Transaction &transaction) { return transaction.getId() == txId; });
 
@@ -10,30 +11,16 @@ void Pool::getTransactionInfo(int txId) {
         std::cout << m_pool[index];
     } else
         std::cout << "Transaction with this id does not exist." << std::endl;
+
 }
 
-int Pool::getPoolSize() {
-    return m_pool.size();
-}
+int Pool::getPoolSize() { return m_pool.size(); }
 
-void Pool::addTransaction(Transaction transaction) {
-    m_pool.push_back(transaction);
-}
+void Pool::addTransaction(const Transaction &transaction) { m_pool.push_back(transaction); }
+
+Transaction Pool::getTransaction(int txId) { return m_pool[txId]; }
 
 void Pool::removeTransaction(int txId) {
-    std::swap(m_pool[txId], m_pool.back());
-    m_pool.pop_back();
-}
-
-Transaction Pool::getTransaction(int txId) {
-    return m_pool[txId];
-}
-
-std::vector<Transaction> Pool::getPool() {
-    return m_pool;
-}
-
-void Pool::removeByTxId(int txId) {
 
     auto transactionIt = find_if(m_pool.begin(), m_pool.end(),
                                  [&txId](Transaction &t) { return t.getId() == txId; });
@@ -47,8 +34,41 @@ std::string Pool::genMerkleHash() {
 
     std::string dataHash;
 
-    for (Transaction t: m_pool)
+    for (const Transaction &t: m_pool)
         dataHash += t.getHash();
 
     return hash(dataHash);
+
+}
+
+int findUser(std::string publicKey, std::vector<User> &users) {
+
+    auto it = find_if(users.begin(), users.end(),
+                      [&publicKey](User &user) { return user.getPublicKey() == publicKey; });
+    int index = std::distance(users.begin(), it);
+
+    return index;
+
+}
+
+void Pool::processTransactions(std::vector<User> &users) {
+
+    std::string publicKey;
+
+    int index;
+
+    for (Transaction t: m_pool) {
+
+        index = findUser(t.getRecipient(), users);
+        users[index].setBalance(users[index].getBalance() + t.getAmount());
+
+        index = findUser(t.getSender(), users);
+        users[index].setBalance(users[index].getBalance() - t.getAmount());
+
+        int txId = t.getId();
+
+        removeTransaction(txId);
+
+    }
+    
 }
