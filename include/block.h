@@ -7,6 +7,7 @@
 #include <vector>
 #include "transaction.h"
 #include "hash.h"
+#include "pool.h"
 
 class Block {
 
@@ -15,11 +16,13 @@ private:
     std::string m_prevHash{};
     std::string m_dataHash{};
     std::string m_blockHash{};
-    int m_nonce{};
-    time_t m_timestamp{};
-    int m_difficulty{1};
 
-    std::vector<Transaction> m_data{};
+    int m_nonce{};
+    int m_difficulty{2};
+
+    time_t m_timestamp{};
+
+    Pool m_data{};
 
 public:
 
@@ -27,9 +30,11 @@ public:
 
     std::string getBlockHash() const;
 
-    void setData(std::vector<Transaction> t);
+    void setData(Pool pool);
 
     int getDataSize();
+
+    const std::string hashBlock();
 
     bool mine();
 

@@ -8,12 +8,12 @@ Block::Block(std::string prevHash, std::string dataHash) {
 
 std::string Block::getBlockHash() const { return m_blockHash; };
 
-void Block::setData(std::vector<Transaction> t) {
-    m_data = t;
+void Block::setData(Pool p) {
+    m_data = p;
 };
 
 int Block::getDataSize() {
-    return m_data.size();
+    return m_data.getPoolSize();
 }
 
 std::ostream &operator<<(std::ostream &out, Block block) {
@@ -29,24 +29,34 @@ std::ostream &operator<<(std::ostream &out, Block block) {
     return out;
 }
 
+
+const std::string Block::hashBlock() {
+    MYSHA mysha;
+
+    std::string hash = mysha(
+            m_prevHash + m_dataHash + std::to_string(m_timestamp) +
+            std::to_string(m_nonce));
+
+    return hash;
+}
+
 bool Block::mine() {
 
-    for (int nonce = 0; nonce < 100000000; ++nonce) {
-        MYSHA mysha;
+    std::string targetStr(m_difficulty, '0');
 
-        std::string targetStr(m_difficulty, '0');
+    std::string hash = hashBlock();
 
-        std::string hash = mysha(
-                m_prevHash + m_dataHash + std::to_string(m_timestamp) +
-                std::to_string(nonce));
+    while (hash.substr(0, m_difficulty) != targetStr) {
 
-        if (hash.substr(0, m_difficulty) == targetStr) {
+        hash = hashBlock();
 
-            m_nonce = nonce;
-            m_blockHash = hash;
+        m_nonce++;
 
-            return true;
-        }
+        if (m_nonce > 10000 * m_difficulty)
+            return false;
     }
-    return false;
+
+    m_blockHash = hash;
+    return true;
+
 }
