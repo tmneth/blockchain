@@ -19,7 +19,7 @@ void genUsers(std::vector<User> &users) {
 
 }
 
-void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
+void genPool(std::vector<User> &users, Pool &pool) {
 
     std::random_device device;
     std::mt19937 mt(device());
@@ -49,41 +49,28 @@ void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
 
         transaction.setHash();
 
-        pool.push_back(transaction);
+        pool.addTransaction(transaction);
     }
+
 }
 
-std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool) {
+Pool shrinkPool(Pool &pool) {
 
-    std::vector<Transaction> newPool;
+    Pool newPool;
 
     for (int i = 0; i < 100; ++i) {
         std::random_device device;
         std::mt19937 mt(device());
-        std::uniform_int_distribution<int> seed(0, pool.size() - 1);
+        std::uniform_int_distribution<int> seed(0, pool.getPoolSize() - 1);
 
         int index = seed(mt);
 
-        std::swap(pool[index], pool.back());
-        pool.pop_back();
+        newPool.addTransaction(pool.getTransaction(index));
 
-        newPool.push_back(pool[index]);
+        pool.removeTransaction(index);
     }
 
     return newPool;
-
-}
-
-std::string genMerkleTree(std::vector<Transaction> pool) {
-
-    MYSHA mysha;
-
-    std::string dataHash;
-
-    for (Transaction t: pool)
-        dataHash += t.getHash();
-
-    return mysha(dataHash);
 
 }
 
@@ -97,22 +84,12 @@ int findUser(std::string publicKey, std::vector<User> &users) {
 
 }
 
-int getTransaction(std::vector<Transaction> &pool, int id) {
-
-    auto it = find_if(pool.begin(), pool.end(),
-                      [&id](Transaction &t) { return t.getId() == id; });
-
-    int index = std::distance(pool.begin(), it);
-
-    return index;
-}
-
-void processTransactions(std::vector<Transaction> &pool, std::vector<User> &users) {
+void processTransactions(Pool pool, std::vector<User> &users) {
 
     std::string publicKey;
     int index;
 
-    for (Transaction t: pool) {
+    for (Transaction t: pool.getPool()) {
 
         index = findUser(t.getRecipient(), users);
         users[index].setBalance(users[index].getBalance() + t.getAmount());
@@ -120,27 +97,25 @@ void processTransactions(std::vector<Transaction> &pool, std::vector<User> &user
         index = findUser(t.getSender(), users);
         users[index].setBalance(users[index].getBalance() - t.getAmount());
 
-        int transactionId = t.getId();
+        int txId = t.getId();
 
-        auto transactionIt = find_if(pool.begin(), pool.end(),
-                                     [&transactionId](Transaction &t) { return t.getId() == transactionId; });
-        pool.erase(transactionIt);
+        pool.removeByTxId(txId);
 
     }
 
 }
 
-void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> users) {
+void initBlockchain(Blockchain &chain, Pool pool, std::vector<User> users) {
 
-    std::vector<Transaction> newPool;
+    Pool newPool;
 
     std::string dataHash;
-
-    for (int i = 1; pool.size(); i++) {
+    
+    for (int i = 1; pool.getPoolSize(); i++) {
 
         newPool = shrinkPool(pool);
 
-        dataHash = genMerkleTree(newPool);
+        dataHash = newPool.genMerkleHash();
 
         Block newBlock(chain.getPrevHash(), dataHash);
 

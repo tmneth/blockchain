@@ -26,15 +26,15 @@ void showHelpMessage() {
             << "help: Show this help message\n"
             << "getblock <blockhash>: Retrieve the details of a mined block \n"
             << "gettransaction <transactionid>: Retrieve the details of a transaction \n"
-            << "stop: exit the program\n"
-            << std::endl;
+            << "stop: exit the program\n";
 }
 
 int main() {
 
     Blockchain chain;
+    Pool pool;
+
     std::vector<User> users;
-    std::vector<Transaction> pool;
 
     genUsers(users);
     genPool(users, pool);
@@ -53,9 +53,11 @@ int main() {
             std::string hash = words[1];
             chain.getBlockInfo(hash);
         } else if (words[0] == "gettransaction") {
-            std::cout << pool[getTransaction(pool, stoi(words[1]))] << std::endl;
+            pool.getTransactionInfo(stoi(words[1]));
         } else if (words[0] == "stop") {
             input = false;
+        } else {
+            std::cout << "Command not found. Try again" << std::endl;
         }
 
     } while (input);

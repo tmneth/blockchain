@@ -16,9 +16,13 @@ void Blockchain::getBlockInfo(std::string blockhash) {
 
     auto it = find_if(m_chain.begin(), m_chain.end(),
                       [&blockhash](Block &block) { return block.getBlockHash() == blockhash; });
-    int index = std::distance(m_chain.begin(), it);
 
-    std::cout << m_chain[index];
+    if (it != m_chain.end()) {
+        int index = std::distance(m_chain.begin(), it);
+        std::cout << m_chain[index];
+    } else
+        std::cout << "Block with this hash does not exist." << std::endl;
+
 }
 
 std::ostream &operator<<(std::ostream &out, Blockchain chain) {

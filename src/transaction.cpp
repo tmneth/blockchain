@@ -13,8 +13,8 @@ void Transaction::setSender(std::string_view hash) {
 };
 
 void Transaction::setHash() {
-    MYSHA mysha;
-    m_hash = mysha(m_to + m_from);
+    MYSHA hash;
+    m_hash = hash(m_to + m_from);
 };
 
 void Transaction::setAmount(double amount) {
