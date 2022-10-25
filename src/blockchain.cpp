@@ -12,27 +12,17 @@ std::string Blockchain::getPrevHash() {
     return m_chain[m_chain.size() - 1].getBlockHash();
 }
 
-std::string Blockchain::getBlockInfo(int blockid) {
+void Blockchain::getBlockInfo(std::string blockhash) {
 
-    auto it = find_if(m_chain.begin(), m_chain.end(), [&blockid](Block &block) { return block.getIndex() == blockid; });
+    auto it = find_if(m_chain.begin(), m_chain.end(),
+                      [&blockhash](Block &block) { return block.getBlockHash() == blockhash; });
     int index = std::distance(m_chain.begin(), it);
 
-    return m_chain[index].getBlockProps();
-}
-
-int Blockchain::getDifficulty() {
-    return m_difficulty;
+    std::cout << m_chain[index];
 }
 
 std::ostream &operator<<(std::ostream &out, Blockchain chain) {
-    out << "Blocks: " << chain.getChain().size() << "\nDifficulty: " << chain.getDifficulty() << std::endl;
+    for (const Block &block: chain.getChain())
+        out << block;
     return out;
-}
-
-void Blockchain::print() {
-    for (const Block &block: m_chain)
-        std::cout << "Block hash: " << block.getBlockHash() << "\nPrevious hash: " << block.getPrevHash()
-                  << "\nMerkle hash: " << block.getDataHash() << "\nNonce: "
-                  << block.getNonce()
-                  << std::endl << std::endl;
 }

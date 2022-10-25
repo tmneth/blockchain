@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "hash.h"
 
 class Transaction {
 
@@ -28,13 +29,13 @@ public:
 
     int getId();
 
-    std::string getRecipient();
+    std::string getRecipient() const;
 
-    std::string getSender();
+    std::string getSender() const;
 
-    std::string getHash();
+    std::string getHash() const;
 
-    double getAmount();
+    double getAmount() const;
 
     friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
 

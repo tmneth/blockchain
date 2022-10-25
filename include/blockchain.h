@@ -11,17 +11,15 @@ class Blockchain {
 private:
 
     std::vector<Block> m_chain;
-    int m_difficulty{2};
 
 public:
 
     Blockchain() {
         Block genesisBlock(
                 "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
-                "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
-                0
+                "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"
         );
-        genesisBlock.mine(2);
+        genesisBlock.mine();
         appendBlock(genesisBlock);
     }
 
@@ -29,11 +27,7 @@ public:
 
     std::string getPrevHash();
 
-    int getDifficulty();
-
-    std::string getBlockInfo(int blockid);
-
-    void print();
+    void getBlockInfo(std::string blockhash);
 
     std::vector<Block> getChain();
 

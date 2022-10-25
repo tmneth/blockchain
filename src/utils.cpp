@@ -1,8 +1,4 @@
-#include <algorithm>
-#include <random>
 #include "utils.h"
-#include "block.h"
-#include "blockchain.h"
 
 double genRandAmount() {
 
@@ -134,7 +130,6 @@ void processTransactions(std::vector<Transaction> &pool, std::vector<User> &user
 
 }
 
-
 void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> users) {
 
     std::vector<Transaction> newPool;
@@ -147,14 +142,16 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
         dataHash = genMerkleTree(newPool);
 
-        Block newBlock(chain.getPrevHash(), dataHash, i);
+        Block newBlock(chain.getPrevHash(), dataHash);
 
         newBlock.setData(newPool);
 
-        if (newBlock.mine(chain.getDifficulty()))
+        if (newBlock.mine())
             chain.appendBlock(newBlock);
 
         processTransactions(newPool, users);
     }
+
+    std::cout << chain << std::endl;
 
 }

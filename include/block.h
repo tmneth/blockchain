@@ -3,29 +3,27 @@
 #include <iostream>
 #include <ctime>
 #include <string>
+#include <algorithm>
 #include <vector>
-
 #include "transaction.h"
+#include "hash.h"
 
 class Block {
-//
-//protected:
-//    Block(int m_index, std::string prevHash, std::string dataHash, std::string blockHash, int m_nonce);
 
 private:
 
-    int m_index{};
     std::string m_prevHash{};
     std::string m_dataHash{};
     std::string m_blockHash{};
     int m_nonce{};
-    int m_timeStamp{};
+    time_t m_timestamp{};
+    int m_difficulty{1};
+
     std::vector<Transaction> m_data{};
-    int m_difficultyTarget{};
 
 public:
 
-    Block(std::string prevHash, std::string dataHash, int index);
+    Block(std::string prevHash, std::string dataHash);
 
     std::string getPrevHash() const;
 
@@ -33,15 +31,17 @@ public:
 
     std::string getBlockHash() const;
 
+    int getTimestamp() const;
+
     int getNonce() const;
 
-    int getIndex() const;
+    int getDifficulty() const;
 
     void setData(std::vector<Transaction> t);
 
-    std::string getBlockProps();
+    int getDataSize();
 
-    bool mine(int difficultyTarget);
+    bool mine();
 
     friend std::ostream &operator<<(std::ostream &out, Block block);
 

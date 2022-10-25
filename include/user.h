@@ -17,11 +17,13 @@ public:
 
     User(std::string name, double balance);
 
-    std::string getName();
+    std::string getName() const;
 
-    std::string getPublicKey();
+    std::string getPublicKey() const;
 
     double getBalance();
+
+    void setBalance(double balance);
 
     friend std::ostream &operator<<(std::ostream &out, User user);
 
