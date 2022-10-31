@@ -19,24 +19,24 @@ void genUsers(std::vector<User> &users) {
 
 }
 
-void genPool(std::vector<User> &users, Pool &pool) {
+void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
 
     std::random_device device;
     std::mt19937 mt(device());
-    std::uniform_int_distribution<int> seed(0, 999);
+    std::uniform_int_distribution<int> seed(0, users.size()-1);
 
     for (int i = 1; i <= 10000; ++i) {
 
+        double amount =  genRandAmount();
+
         int randUser1 = seed(mt);
         int randUser2 = seed(mt);
-        double amount = genRandAmount();
 
         while (randUser1 == randUser2)
             randUser1 = seed(mt);
 
-        while (users[randUser1].getBalance() < amount)
+        while(amount > users[randUser1].getBalance())
             amount = genRandAmount();
-
 
         Transaction transaction;
 
@@ -49,54 +49,96 @@ void genPool(std::vector<User> &users, Pool &pool) {
 
         transaction.setHash();
 
-        pool.addTransaction(transaction);
+        pool.push_back(transaction);
     }
 
 }
 
-Pool shrinkPool(Pool &pool) {
+void removeTransaction(int txId, std::vector<Transaction> &pool) {
 
-    Pool newPool;
+    auto transactionIt = find_if(pool.begin(), pool.end(),
+                                 [&txId](Transaction &t) { return t.getId() == txId; });
+    pool.erase(transactionIt);
+
+}
+
+
+std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool) {
+
+    std::vector<Transaction> newPool;
 
     for (int i = 0; i < 100; ++i) {
 
         std::random_device device;
         std::mt19937 mt(device());
-        std::uniform_int_distribution<int> seed(0, pool.getPoolSize() - 1);
+        std::uniform_int_distribution<int> seed(0, pool.size() - 1);
 
         int index = seed(mt);
 
-        newPool.addTransaction(pool.getTransaction(index));
+        newPool.push_back(pool[index]);
 
-        pool.removeTransaction(index);
+        removeTransaction(index, pool);
     }
+
 
     return newPool;
 
 }
 
-void initBlockchain(Blockchain &chain, Pool pool, std::vector<User> users) {
+int findUser(std::string publicKey, std::vector<User> &users) {
 
-    Pool newPool;
+    auto it = find_if(users.begin(), users.end(),
+                      [&publicKey](User &user) { return user.getPublicKey() == publicKey; });
+    int index = std::distance(users.begin(), it);
+
+    return index;
+
+}
+
+void processTransactions(std::vector<User> &users, std::vector<Transaction> pool) {
+
+    std::string publicKey;
+
+    int index;
+
+    for (Transaction t: pool) {
+
+        index = findUser(t.getRecipient(), users);
+        users[index].setBalance(users[index].getBalance() + t.getAmount());
+
+        index = findUser(t.getSender(), users);
+        users[index].setBalance(users[index].getBalance() - t.getAmount());
+
+        int txId = t.getId();
+
+        removeTransaction(txId, pool);
+
+    }
+
+}
+
+void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users) {
+
+    std::vector<Transaction> newPool;
 
     std::string dataHash;
 
-    for (int i = 1; pool.getPoolSize(); i++) {
+    for (int i = 1; pool.size(); i++) {
 
         newPool = shrinkPool(pool);
 
-        dataHash = newPool.genMerkleHash();
-
-        Block newBlock(chain.getPrevHash(), dataHash);
-
-        newBlock.setData(newPool);
+        Block newBlock(chain.getPrevHash(), dataHash, newPool);
 
         if (newBlock.mine())
             chain.appendBlock(newBlock);
 
-        newPool.processTransactions(users);
+        processTransactions(users, newPool);
     }
 
     std::cout << chain << std::endl;
+//
+//    for(const User& u: users) {
+//        std::cout << u << std::endl;
+//    }
 
 }

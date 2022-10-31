@@ -16,11 +16,23 @@ User::User(std::string name, double balance) {
 
 };
 
-void User::setBalance(double balance) { m_balance = balance; }
+void User::setBalance(double balance) {
 
-std::string User::getPublicKey() const { return m_publicKey; };
+    m_balance = balance;
 
-double User::getBalance() { return m_balance; };
+}
+
+std::string User::getPublicKey() const {
+
+    return m_publicKey;
+
+};
+
+double User::getBalance() {
+
+    return m_balance;
+
+};
 
 std::ostream &operator<<(std::ostream &out, User user) {
 

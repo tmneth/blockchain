@@ -7,7 +7,6 @@
 #include <vector>
 #include "transaction.h"
 #include "hash.h"
-#include "pool.h"
 
 class Block {
 
@@ -22,21 +21,19 @@ private:
 
     time_t m_timestamp{};
 
-    Pool m_data{};
+    std::vector <Transaction> m_data{};
 
 public:
 
-    Block(std::string prevHash, std::string dataHash);
+    Block(std::string prevHash, std::string dataHash, std::vector<Transaction> newPool);
 
     std::string getBlockHash() const;
-
-    void setData(Pool pool);
-
-    int getDataSize();
 
     std::string hashBlock();
 
     bool mine();
+
+    std::string buildMerkleTree();
 
     friend std::ostream &operator<<(std::ostream &out, Block block);
 

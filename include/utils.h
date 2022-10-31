@@ -11,10 +11,9 @@
 #include "transaction.h"
 #include "blockchain.h"
 #include "block.h"
-#include "pool.h"
 
-void initBlockchain(Blockchain &chain, Pool pool, std::vector<User> users);
+void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users);
 
 void genUsers(std::vector<User> &users);
 
-void genPool(std::vector<User> &users, Pool &pool);
+void genPool(std::vector<User> &users, std::vector<Transaction> &pool);

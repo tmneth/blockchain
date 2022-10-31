@@ -64,7 +64,7 @@ Timestamp: 1666789088
 To mine a block, following properties are concatenated
 and [hashed](https://github.com/tmneth/hash-generator) : `previous hash`, `data hash`, `timestamp` and `nonce`.
 
-## Project structure
+## Project Structure
 
 ```zsh
 .

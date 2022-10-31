@@ -1,18 +1,50 @@
 #include "block.h"
 
-Block::Block(std::string prevHash, std::string dataHash) {
+Block::Block(std::string prevHash, std::string dataHash, std::vector<Transaction> newPool) {
 
+    m_data = newPool;
     m_dataHash = dataHash;
     m_prevHash = prevHash;
     m_timestamp = time(0);
-    
+
 }
 
-std::string Block::getBlockHash() const { return m_blockHash; };
+std::string Block::buildMerkleTree() {
 
-void Block::setData(Pool pool) { m_data = pool; };
+    std::vector<std::string> merkle;
 
-int Block::getDataSize() { return m_data.getPoolSize(); }
+    for (auto& tx : m_data) {
+        merkle.push_back(hash(hash(tx.getID())));
+    }
+
+    if (merkle.empty()) {
+        return "null";
+    }
+    if (merkle.size() == 1) {
+        return merkle[0];
+    }
+
+    while (merkle.size() != 1)
+    {
+        std::vector<std::string> temp;
+
+        if (merkle.size() % 2 != 0) {
+            merkle.push_back(merkle.back());
+        }
+        for (size_t i = 0; i < merkle.size(); i+=2)
+        {
+            temp.push_back(hash(hash(merkle[i] + merkle[i + 1])));
+        }
+        merkle = temp;
+    }
+    return merkle[0];
+}
+
+std::string Block::getBlockHash() const {
+
+    return m_blockHash;
+
+};
 
 std::ostream &operator<<(std::ostream &out, Block block) {
 
@@ -22,7 +54,7 @@ std::ostream &operator<<(std::ostream &out, Block block) {
         << "\nTimestamp: " << block.m_timestamp
         << "\nNonce: " << block.m_nonce
         << "\nDifficulty: " << block.m_difficulty
-        << "\nNumber of transactions: " << block.getDataSize() << std::endl;
+        << "\nNumber of transactions: " << block.m_data.size() << std::endl;
 
     return out;
 
