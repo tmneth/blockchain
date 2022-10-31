@@ -41,6 +41,8 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
 
+//    friend std::istream &operator>>(std::istream &in, Transaction &transaction);
+
     ~Transaction() = default;
 
 };

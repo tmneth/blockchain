@@ -23,11 +23,11 @@ void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
 
     std::random_device device;
     std::mt19937 mt(device());
-    std::uniform_int_distribution<int> seed(0, users.size()-1);
+    std::uniform_int_distribution<int> seed(0, users.size() - 1);
 
     for (int i = 1; i <= 10000; ++i) {
 
-        double amount =  genRandAmount();
+        double amount = genRandAmount();
 
         int randUser1 = seed(mt);
         int randUser2 = seed(mt);
@@ -35,7 +35,7 @@ void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
         while (randUser1 == randUser2)
             randUser1 = seed(mt);
 
-        while(amount > users[randUser1].getBalance())
+        while (amount > users[randUser1].getBalance())
             amount = genRandAmount();
 
         Transaction transaction;
@@ -54,15 +54,6 @@ void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
 
 }
 
-void removeTransaction(int txId, std::vector<Transaction> &pool) {
-
-    auto transactionIt = find_if(pool.begin(), pool.end(),
-                                 [&txId](Transaction &t) { return t.getId() == txId; });
-    pool.erase(transactionIt);
-
-}
-
-
 std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool) {
 
     std::vector<Transaction> newPool;
@@ -77,7 +68,6 @@ std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool) {
 
         newPool.push_back(pool[index]);
 
-        removeTransaction(index, pool);
     }
 
 
@@ -85,60 +75,47 @@ std::vector<Transaction> shrinkPool(std::vector<Transaction> &pool) {
 
 }
 
-int findUser(std::string publicKey, std::vector<User> &users) {
+void purgeTransactions(std::vector<Transaction> newPool, std::vector<Transaction> &pool) {
 
-    auto it = find_if(users.begin(), users.end(),
-                      [&publicKey](User &user) { return user.getPublicKey() == publicKey; });
-    int index = std::distance(users.begin(), it);
-
-    return index;
-
-}
-
-void processTransactions(std::vector<User> &users, std::vector<Transaction> pool) {
-
-    std::string publicKey;
-
-    int index;
-
-    for (Transaction t: pool) {
-
-        index = findUser(t.getRecipient(), users);
-        users[index].setBalance(users[index].getBalance() + t.getAmount());
-
-        index = findUser(t.getSender(), users);
-        users[index].setBalance(users[index].getBalance() - t.getAmount());
-
-        int txId = t.getId();
-
-        removeTransaction(txId, pool);
-
+    for (Transaction &tx: newPool) {
+        auto it = std::find_if(pool.begin(), pool.end(),
+                               [&tx](Transaction t) { return t.getId() == tx.getId(); });
+        if (it != pool.end()) {
+            pool.erase(it);
+        }
     }
-
 }
 
 void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users) {
 
-    std::vector<Transaction> newPool;
-
-    std::string dataHash;
-
     for (int i = 1; pool.size(); i++) {
 
-        newPool = shrinkPool(pool);
+        std::vector<Transaction> newPool;
+        std::vector<Block> blocks;
+        char blockName = 'a';
+        int maxNonce = 10000;
 
-        Block newBlock(chain.getPrevHash(), dataHash, newPool);
+        for (int j = 0; j < 5; ++j)
+            blocks.emplace_back(chain.getPrevHash(), shrinkPool(pool));
 
-        if (newBlock.mine())
-            chain.appendBlock(newBlock);
+        for (Block block: blocks) {
+            if (block.mine(maxNonce)) {
+                purgeTransactions(block.getData(), pool);
+                block.processTransactions(users);
+                chain.appendBlock(block);
+//                std::cout << "Mined block " << blockName << std::endl;
+                std::cout << block << std::string(50, '-') << std::endl;
+                break;7
+            } else {
+                blockName++;
+                maxNonce *= 2;
+            }
+        }
 
-        processTransactions(users, newPool);
     }
 
-    std::cout << chain << std::endl;
-//
-//    for(const User& u: users) {
-//        std::cout << u << std::endl;
-//    }
+    for(User u: users) {
+        std::cout << u << std::endl;
+    }
 
 }

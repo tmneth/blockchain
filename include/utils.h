@@ -6,6 +6,7 @@
 #include <string>
 #include <iomanip>
 #include <random>
+#include <fstream>
 
 #include "user.h"
 #include "transaction.h"

@@ -23,6 +23,7 @@ std::string Transaction::getSender() const { return m_from; };
 
 std::string Transaction::getHash() const { return m_hash; };
 
+
 double Transaction::getAmount() const { return m_amount; }
 
 std::ostream &operator<<(std::ostream &out, Transaction transaction) {
@@ -36,3 +37,16 @@ std::ostream &operator<<(std::ostream &out, Transaction transaction) {
     return out;
 
 }
+
+//std::istream &operator>>(std::istream &in, Transaction &transaction) {
+//
+//    in >> transaction.m_id
+//       >> transaction.m_from
+//       >> transaction.m_to
+//       >> transaction.m_hash
+//       >> transaction.m_amount
+//       >> transaction.m_timestamp;
+//
+//    return in;
+//
+//}
