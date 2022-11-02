@@ -19,11 +19,11 @@ public:
 
     std::string getPublicKey() const;
 
-    double getBalance();
+    double getBalance() const;
 
     void setBalance(double balance);
 
-    friend std::ostream &operator<<(std::ostream &out, User user);
+    friend std::ostream &operator<<(std::ostream &out, const User &user);
 
     ~User() = default;
 

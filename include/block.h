@@ -16,36 +16,31 @@ private:
     std::string m_prevHash{};
     std::string m_blockHash{};
     std::string m_merkleRoot{};
-
     int m_nonce{};
-    int m_difficulty{3};
-
+    int m_difficulty{2};
     time_t m_timestamp{};
-
     std::vector<Transaction> m_data;
 
 public:
 
-    Block(std::string prevHash, std::vector<Transaction> data);
-
-    Block() = default;
+    Block(std::string prevHash, std::vector<Transaction> pool);
 
     std::string getBlockHash() const;
 
+    std::vector<Transaction> getData() const;
+
     std::string hashBlock();
 
-    std::vector<Transaction> getData();
-
-    void processTransactions(std::vector<User> &users);
+    void processTransactions(std::vector<Transaction> pool, std::vector<User> &users);
 
     bool mine(int maxNonce);
 
-    std::string buildMerkleTree();
+    std::string buildMerkleTree(std::vector<Transaction> pool);
 
     friend std::ostream &operator<<(std::ostream &out, Block block);
-
-//    friend std::istream &operator>>(std::istream &in, Block &block);
 
     ~Block() = default;
 
 };
+
+int findUser(std::string publicKey, std::vector<User> &users);

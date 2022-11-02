@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "hash.h"
+#include <iomanip>
 
 class Transaction {
 
@@ -12,7 +13,6 @@ private:
     std::string m_from{};
     std::string m_hash{};
     double m_amount{};
-
     time_t m_timestamp{};
 
 public:
@@ -29,7 +29,7 @@ public:
 
     void setAmount(double amount);
 
-    int getId();
+    int getId() const;
 
     std::string getRecipient() const;
 
@@ -39,9 +39,9 @@ public:
 
     double getAmount() const;
 
-    friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
+    time_t getTimestamp() const;
 
-//    friend std::istream &operator>>(std::istream &in, Transaction &transaction);
+    friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
 
     ~Transaction() = default;
 

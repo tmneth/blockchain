@@ -1,15 +1,17 @@
+#include <random>
+#include <set>
+#include <utility>
 #include "block.h"
 
-Block::Block(std::string prevHash, std::vector<Transaction> data) {
+Block::Block(std::string prevHash, std::vector<Transaction> pool) {
 
-    m_prevHash = prevHash;
-    m_data = data;
-    m_merkleRoot = buildMerkleTree();
-    m_timestamp = time(0);
+    m_prevHash = std::move(prevHash);
+    m_data = std::move(pool);
+    m_timestamp = time(nullptr);
 
 }
 
-std::string Block::buildMerkleTree() {
+std::string Block::buildMerkleTree(std::vector<Transaction> pool) {
 
     MYSHA hash;
 
@@ -38,6 +40,7 @@ std::string Block::buildMerkleTree() {
         merkle = temp;
     }
     return merkle[0];
+
 }
 
 int findUser(std::string publicKey, std::vector<User> &users) {
@@ -50,19 +53,39 @@ int findUser(std::string publicKey, std::vector<User> &users) {
 
 }
 
-void Block::processTransactions(std::vector<User> &users) {
+void Block::processTransactions(std::vector<Transaction> pool, std::vector<User> &users) {
 
-    int index;
+    std::vector<Transaction> newPool;
 
-    for (Transaction t: m_data) {
+    MYSHA hash;
 
-        index = findUser(t.getRecipient(), users);
-        users[index].setBalance(users[index].getBalance() + t.getAmount());
 
-        index = findUser(t.getSender(), users);
-        users[index].setBalance(users[index].getBalance() - t.getAmount());
+    for (int i = 0; i < 100; ++i) {
+
+        int senderId = findUser(pool[i].getSender(), users);
+        int recipientId = findUser(pool[i].getRecipient(), users);
+
+        double txAmount = pool[i].getAmount();
+
+        if (users[senderId].getBalance() >= txAmount &&
+            hash(users[senderId].getPublicKey()
+                 + users[recipientId].getPublicKey()
+                 + std::to_string(pool[i].getAmount())
+                 + std::to_string(pool[i].getTimestamp()))
+            == pool[i].getHash()) {
+
+            newPool.push_back(pool[i]);
+
+            users[senderId].setBalance(users[senderId].getBalance() - txAmount);
+
+            users[recipientId].setBalance(users[recipientId].getBalance() + txAmount);
+
+        }
 
     }
+
+    m_merkleRoot = buildMerkleTree(newPool);
+
 }
 
 std::string Block::getBlockHash() const {
@@ -71,8 +94,10 @@ std::string Block::getBlockHash() const {
 
 };
 
-std::vector<Transaction> Block::getData() {
+std::vector<Transaction> Block::getData() const {
+
     return m_data;
+
 }
 
 std::string Block::hashBlock() {
@@ -110,7 +135,7 @@ bool Block::mine(int maxNonce) {
 
 std::ostream &operator<<(std::ostream &out, Block block) {
 
-    out << "Block hash: " << block.m_blockHash
+    out << "\nBlock hash: " << block.m_blockHash
         << "\nPrevious hash: " << block.m_prevHash
         << "\nMerkle root: " << block.m_merkleRoot
         << "\nTimestamp: " << block.m_timestamp
@@ -118,19 +143,10 @@ std::ostream &operator<<(std::ostream &out, Block block) {
         << "\nDifficulty: " << block.m_difficulty
         << "\nNumber of transactions: " << block.m_data.size() << std::endl;
 
+    std::cout << "\nTransaction list: " << std::endl;
+    for (Transaction transaction: block.m_data)
+        std::cout << transaction << std::endl;
+
     return out;
 
 }
-
-//std::istream &operator>>(std::istream &in, Block &block) {
-//
-//    in >> block.m_blockHash
-//       >> block.m_prevHash
-//       >> block.m_merkleRoot
-//       >> block.m_timestamp
-//       >> block.m_nonce
-//       >> block.m_difficulty;
-//
-//    return in;
-//
-//}

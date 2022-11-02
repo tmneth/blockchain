@@ -1,5 +1,7 @@
 #include "user.h"
 
+#include <utility>
+
 User::User(std::string name, double balance) {
 
     MYSHA hash;
@@ -11,7 +13,7 @@ User::User(std::string name, double balance) {
     m_privateKey = hash(std::to_string(seed(mt)));
     m_publicKey = hash(m_privateKey + m_name);
 
-    m_name = name;
+    m_name = std::move(name);
     m_balance = balance;
 
 };
@@ -28,13 +30,13 @@ std::string User::getPublicKey() const {
 
 };
 
-double User::getBalance() {
+double User::getBalance() const {
 
     return m_balance;
 
 };
 
-std::ostream &operator<<(std::ostream &out, User user) {
+std::ostream &operator<<(std::ostream &out, const User &user) {
 
     out << "\nName: " << user.m_name
         << "\nPublic key: " << user.m_publicKey

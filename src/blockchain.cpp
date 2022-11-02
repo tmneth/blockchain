@@ -1,6 +1,6 @@
 #include "blockchain.h"
 
-void Blockchain::appendBlock(Block block) {
+void Blockchain::appendBlock(const Block &block) {
 
     m_chain.push_back(block);
 
@@ -18,16 +18,12 @@ std::string Blockchain::getPrevHash() {
 
 }
 
-void Blockchain::getBlockInfo(std::string blockhash) {
+Block Blockchain::getBlockInfo(int blocknumber) {
 
-    auto it = find_if(m_chain.begin(), m_chain.end(),
-                      [&blockhash](Block &block) { return block.getBlockHash() == blockhash; });
-
-    if (it != m_chain.end()) {
-        int index = std::distance(m_chain.begin(), it);
-        std::cout << m_chain[index];
-    } else
-        std::cout << "Block with this hash does not exist." << std::endl;
+    if (blocknumber >= m_chain.size() || blocknumber < 0)
+        std::cout << "Entered number is out of range." << std::endl;
+    else
+        return m_chain[blocknumber];
 
 }
 

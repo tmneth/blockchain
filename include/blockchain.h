@@ -15,23 +15,25 @@ private:
 public:
 
     Blockchain() {
-        std::vector<Transaction> data(0);
+        std::vector<Transaction> pool(0);
         Block genesisBlock(
-                "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
-                data
+                std::string(16, 0),
+                pool
         );
         genesisBlock.mine(10000);
         appendBlock(genesisBlock);
     }
 
-    void appendBlock(Block block);
+    void appendBlock(const Block &block);
 
     std::string getPrevHash();
 
-    void getBlockInfo(std::string blockhash);
+    Block getBlockInfo(int blocknumber);
 
     std::vector<Block> getChain();
 
     friend std::ostream &operator<<(std::ostream &out, Blockchain chain);
+
+    ~Blockchain() = default;
 
 };

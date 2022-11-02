@@ -6,9 +6,10 @@ void showHelpMessage() {
     std::cerr
             << "\nAvailable commands: \n"
             << "help: Show this help message\n"
-            << "getblock <blockhash>: Retrieve details of a mined block \n"
-            << "gettransaction <transactionid>: Retrieve details of a transaction \n"
-            << "stop: exit the program\n";
+            << "test: Generate users & transactions to test blockchain"
+            << "getblock <blockid>: Retrieve details of a mined block \n"
+            << "exit: exit the program\n\n";
+
 }
 
 
@@ -18,10 +19,6 @@ int main(int argc, char *argv[]) {
 
     std::vector<Transaction> pool;
     std::vector<User> users;
-
-    genUsers(users);
-    genPool(users, pool);
-    initBlockchain(chain, pool, users);
 
     if (argc == 1) {
         showHelpMessage();
@@ -35,8 +32,13 @@ int main(int argc, char *argv[]) {
         if (arg == "help") {
             showHelpMessage();
             return 1;
+        } else if (arg == "test") {
+            initBlockchain(chain, pool, users, true);
         } else if (arg == "getblock") {
-            chain.getBlockInfo(argv[i + 1]);
+            initBlockchain(chain, pool, users, false);
+            std::cout << chain.getBlockInfo(std::stoi(argv[i + 1])) << std::endl;
+        } else if (arg == "exit") {
+            return 0;
         }
 
     }

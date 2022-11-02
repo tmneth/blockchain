@@ -13,7 +13,7 @@
 #include "blockchain.h"
 #include "block.h"
 
-void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users);
+void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users, bool debug);
 
 void genUsers(std::vector<User> &users);
 
