@@ -11,7 +11,7 @@ Block::Block(std::string prevHash, std::vector<Transaction> pool) {
 
 }
 
-std::string Block::buildMerkleTree(std::vector<Transaction> pool) {
+std::string Block::buildMerkleTree() {
 
     MYSHA hash;
 
@@ -53,7 +53,7 @@ int findUser(std::string publicKey, std::vector<User> &users) {
 
 }
 
-void Block::processTransactions(std::vector<Transaction> pool, std::vector<User> &users) {
+void Block::processTransactions(std::vector<Transaction> &pool, std::vector<User> &users) {
 
     std::vector<Transaction> newPool;
 
@@ -80,11 +80,14 @@ void Block::processTransactions(std::vector<Transaction> pool, std::vector<User>
 
             users[recipientId].setBalance(users[recipientId].getBalance() + txAmount);
 
+        } else {
+            pool.erase(pool.begin() + i);
         }
 
     }
 
-    m_merkleRoot = buildMerkleTree(newPool);
+    m_data = newPool;
+    m_merkleRoot = buildMerkleTree();
 
 }
 

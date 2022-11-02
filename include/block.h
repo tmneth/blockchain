@@ -31,11 +31,11 @@ public:
 
     std::string hashBlock();
 
-    void processTransactions(std::vector<Transaction> pool, std::vector<User> &users);
+    void processTransactions(std::vector<Transaction> &pool, std::vector<User> &users);
 
     bool mine(int maxNonce);
 
-    std::string buildMerkleTree(std::vector<Transaction> pool);
+    std::string buildMerkleTree();
 
     friend std::ostream &operator<<(std::ostream &out, Block block);
 
