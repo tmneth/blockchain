@@ -21,6 +21,8 @@ public:
 
     double getBalance() const;
 
+    std::string getName() const;
+
     void setBalance(double balance);
 
     friend std::ostream &operator<<(std::ostream &out, const User &user);

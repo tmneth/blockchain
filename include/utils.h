@@ -8,10 +8,14 @@
 #include <random>
 #include <fstream>
 
+#include <unistd.h>
+#include <omp.h>
+
 #include "user.h"
 #include "transaction.h"
 #include "blockchain.h"
 #include "block.h"
+
 
 void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users, bool debug);
 

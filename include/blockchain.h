@@ -20,7 +20,7 @@ public:
                 std::string(16, 0),
                 pool
         );
-        genesisBlock.mine(10000);
+        genesisBlock.mine(false);
         appendBlock(genesisBlock);
     }
 
@@ -28,11 +28,7 @@ public:
 
     std::string getPrevHash();
 
-    Block getBlockInfo(int blocknumber);
-
-    std::vector<Block> getChain();
-
-    friend std::ostream &operator<<(std::ostream &out, Blockchain chain);
+    void getBlockInfo(int blocknumber);
 
     ~Blockchain() = default;
 

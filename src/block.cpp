@@ -6,7 +6,8 @@
 Block::Block(std::string prevHash, std::vector<Transaction> pool) {
 
     m_prevHash = std::move(prevHash);
-    m_data = std::move(pool);
+    m_data = pool;
+    m_merkleRoot = buildMerkleTree();
     m_timestamp = time(nullptr);
 
 }
@@ -24,6 +25,7 @@ std::string Block::buildMerkleTree() {
     if (merkle.empty()) {
         return "null";
     }
+
     if (merkle.size() == 1) {
         return merkle[0];
     }
@@ -40,54 +42,6 @@ std::string Block::buildMerkleTree() {
         merkle = temp;
     }
     return merkle[0];
-
-}
-
-int findUser(std::string publicKey, std::vector<User> &users) {
-
-    auto it = find_if(users.begin(), users.end(),
-                      [&publicKey](User &user) { return user.getPublicKey() == publicKey; });
-    int index = std::distance(users.begin(), it);
-
-    return index;
-
-}
-
-void Block::processTransactions(std::vector<Transaction> &pool, std::vector<User> &users) {
-
-    std::vector<Transaction> newPool;
-
-    MYSHA hash;
-
-
-    for (int i = 0; i < 100; ++i) {
-
-        int senderId = findUser(pool[i].getSender(), users);
-        int recipientId = findUser(pool[i].getRecipient(), users);
-
-        double txAmount = pool[i].getAmount();
-
-        if (users[senderId].getBalance() >= txAmount &&
-            hash(users[senderId].getPublicKey()
-                 + users[recipientId].getPublicKey()
-                 + std::to_string(pool[i].getAmount())
-                 + std::to_string(pool[i].getTimestamp()))
-            == pool[i].getHash()) {
-
-            newPool.push_back(pool[i]);
-
-            users[senderId].setBalance(users[senderId].getBalance() - txAmount);
-
-            users[recipientId].setBalance(users[recipientId].getBalance() + txAmount);
-
-        } else {
-            pool.erase(pool.begin() + i);
-        }
-
-    }
-
-    m_data = newPool;
-    m_merkleRoot = buildMerkleTree();
 
 }
 
@@ -117,17 +71,17 @@ std::string Block::hashBlock() {
 
 bool Block::mine(int maxNonce) {
 
-    std::string targetStr(m_difficulty, '0');
+    std::string targetStr(DIFFICULTY_TARGET, '0');
 
     std::string hash = hashBlock();
 
-    while (hash.substr(0, m_difficulty) != targetStr) {
+    while (hash.substr(0, DIFFICULTY_TARGET) != targetStr) {
 
         hash = hashBlock();
 
         m_nonce++;
 
-        if (m_nonce > maxNonce * m_difficulty)
+        if (m_nonce > maxNonce)
             return false;
     }
 
@@ -143,7 +97,7 @@ std::ostream &operator<<(std::ostream &out, Block block) {
         << "\nMerkle root: " << block.m_merkleRoot
         << "\nTimestamp: " << block.m_timestamp
         << "\nNonce: " << block.m_nonce
-        << "\nDifficulty: " << block.m_difficulty
+        << "\nDifficulty: " << DIFFICULTY_TARGET
         << "\nNumber of transactions: " << block.m_data.size() << std::endl;
 
     std::cout << "\nTransaction list: " << std::endl;

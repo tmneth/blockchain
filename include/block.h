@@ -8,6 +8,7 @@
 #include "transaction.h"
 #include "hash.h"
 #include "user.h"
+#include "constants.h"
 
 class Block {
 
@@ -17,7 +18,6 @@ private:
     std::string m_blockHash{};
     std::string m_merkleRoot{};
     int m_nonce{};
-    int m_difficulty{2};
     time_t m_timestamp{};
     std::vector<Transaction> m_data;
 
@@ -31,8 +31,6 @@ public:
 
     std::string hashBlock();
 
-    void processTransactions(std::vector<Transaction> &pool, std::vector<User> &users);
-
     bool mine(int maxNonce);
 
     std::string buildMerkleTree();
@@ -42,5 +40,3 @@ public:
     ~Block() = default;
 
 };
-
-int findUser(std::string publicKey, std::vector<User> &users);

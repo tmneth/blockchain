@@ -76,7 +76,7 @@ std::ostream &operator<<(std::ostream &out, Transaction transaction) {
 //        << "\nAmount: " << transaction.m_amount
 //        << "\nTimestamp: " << transaction.m_timestamp << std::endl;
 
-    out << std::left << std::setw(4) << "[№: " << std::setw(5) << transaction.m_id << "] $" << std::setw(8)
+    out << std::left << "$" << std::setw(8)
         << transaction.m_amount << " Hash: " << transaction.m_hash << " From: " << transaction.m_from << " -> "
         << transaction.m_to << " | Time: "
         << transaction.m_timestamp;

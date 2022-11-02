@@ -43,6 +43,6 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
 
-    ~Transaction() = default;
+//    ~Transaction() = default;
 
 };

@@ -10,7 +10,7 @@ double genRandAmount() {
 
 void genUsers(std::vector<User> &users) {
 
-    for (int i = 1; i <= 1000; ++i) {
+    for (int i = 1; i <= USER_NUM; ++i) {
         User user("user" + std::to_string(i), genRandAmount());
 
         users.push_back(user);
@@ -24,14 +24,11 @@ void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
     std::mt19937 mt(device());
     std::uniform_int_distribution<int> seed(0, users.size() - 1);
 
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < TRANSACTION_NUM; ++i) {
         double amount = genRandAmount();
 
         int randUser1 = seed(mt);
         int randUser2 = seed(mt);
-
-        while (randUser1 == randUser2)
-            randUser1 = seed(mt);
 
         Transaction transaction;
 
@@ -59,34 +56,67 @@ void purgeTransactions(std::vector<Transaction> newPool, std::vector<Transaction
 
 }
 
-std::vector<Transaction> selectTransactions(std::vector<Transaction> &pool) {
+int findUser(std::string publicKey, std::vector<User> &users) {
 
-    std::vector<Transaction> newPool;
+    auto it = find_if(users.begin(), users.end(),
+                      [&publicKey](User &user) { return user.getPublicKey() == publicKey; });
+    int index = std::distance(users.begin(), it);
 
-    std::vector<int> randInd;
+    return index;
 
-    for (int i = 0; i < pool.size(); ++i)
-        randInd.push_back(i);
+}
 
+std::vector<Transaction> processTransactions(std::vector<Transaction> &pool, std::vector<User> &users) {
 
-    std::shuffle(randInd.begin(), randInd.end(), std::mt19937(std::random_device()()));
+    if (pool.size() < REDUCED_TRANSACTION_NUM) {
+        return pool;
+    } else {
 
-    for (int i = 0; i < 100; ++i) {
+        std::vector<Transaction> newPool;
+        MYSHA hash;
+        std::vector<int> randInd;
 
-        int index = randInd[i];
+        for (int i = 0; i < REDUCED_TRANSACTION_NUM; ++i)
+            randInd.push_back(i);
 
-        newPool.push_back(pool[index]);
+        std::shuffle(randInd.begin(), randInd.end(), std::mt19937(std::random_device()()));
 
+        for (int i = 0; i < REDUCED_TRANSACTION_NUM; ++i) {
+
+            int index = randInd[i];
+
+            int senderId = findUser(pool[index].getSender(), users);
+            int recipientId = findUser(pool[index].getRecipient(), users);
+
+            double txAmount = pool[index].getAmount();
+
+            if (users[senderId].getBalance() >= txAmount &&
+                hash(users[senderId].getPublicKey()
+                     + users[recipientId].getPublicKey()
+                     + std::to_string(pool[index].getAmount())
+                     + std::to_string(pool[index].getTimestamp()))
+                == pool[index].getHash()) {
+
+                newPool.push_back(pool[index]);
+
+                users[senderId].setBalance(users[senderId].getBalance() - txAmount);
+
+                users[recipientId].setBalance(users[recipientId].getBalance() + txAmount);
+
+            } else {
+                pool.erase(pool.begin() + index);
+            }
+
+        }
+        return newPool;
     }
-
-    return newPool;
-
 }
 
 void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users, bool debug = false) {
 
     genUsers(users);
     genPool(users, pool);
+    std::vector<User> oldUsers(users);
 
     while (!pool.empty()) {
         std::vector<Transaction> newPool;
@@ -95,23 +125,32 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
         int maxNonce = 10000;
 
         for (int j = 0; j < 5; ++j)
-            blocks.emplace_back(chain.getPrevHash(), selectTransactions(pool));
+            blocks.emplace_back(chain.getPrevHash(), processTransactions(pool, users));
 
+        volatile bool flag = false;
         for (Block block: blocks) {
-            block.processTransactions(pool, users);
+
+            if (flag) continue;
+
             if (block.mine(maxNonce)) {
                 purgeTransactions(block.getData(), pool);
                 chain.appendBlock(block);
                 if (debug) {
-                    std::cout << "\nMined block " << blockName << std::endl;
+                    std::cout << "Mined block " << blockName << std::endl;
                     std::cout << block << std::string(13, '-') << std::endl;
                 }
                 break;
             } else {
                 blockName++;
                 maxNonce *= 2;
+
             }
         }
     }
 
+    std::cout << "User details:" << std::endl;
+    for (int i = 0; i < users.size(); ++i) {
+        std::cout << oldUsers[i].getName() << " " << oldUsers[i].getPublicKey() << " | $" << oldUsers[i].getBalance()
+                  << " -> $" << users[i].getBalance() << std::endl;
+    }
 }

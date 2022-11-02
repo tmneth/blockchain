@@ -24,6 +24,10 @@ void User::setBalance(double balance) {
 
 }
 
+std::string User::getName() const {
+    return m_name;
+}
+
 std::string User::getPublicKey() const {
 
     return m_publicKey;
@@ -38,9 +42,9 @@ double User::getBalance() const {
 
 std::ostream &operator<<(std::ostream &out, const User &user) {
 
-    out << "\nName: " << user.m_name
-        << "\nPublic key: " << user.m_publicKey
-        << "\nBalance: " << user.m_balance << std::endl;
+    out << user.m_name
+        << "\n Public key: " << user.m_publicKey
+        << "\n Balance: " << user.m_balance << std::endl;
     return out;
 
 }
