@@ -28,8 +28,6 @@ public:
 
     std::string getPrevHash();
 
-    void getBlockInfo(int blocknumber);
-
     ~Blockchain() = default;
 
 };
