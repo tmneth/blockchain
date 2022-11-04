@@ -19,13 +19,13 @@ g++ src/*.cpp -o 'main' && ./main
 ### Output
 When compiled, the process of mining is displayed
 ```
-Mined 0 block (c)
-Mined 1 block (e)
+Thread 3 mined 0 block
+Thread 0 mined 1 block
 
 [...]
 
-Mined 43 block (a)
-Mined 44 block (b)
+Thread 2 mined 41 block
+Thread 3 mined 41 block
 ```
 Afterwards, updated balances are printed
 ```
