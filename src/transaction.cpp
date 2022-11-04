@@ -31,12 +31,6 @@ void Transaction::setAmount(double amount) {
 
 }
 
-int Transaction::getId() const {
-
-    return m_id;
-
-};
-
 std::string Transaction::getRecipient() const {
 
     return m_to;
@@ -68,13 +62,6 @@ double Transaction::getAmount() const {
 }
 
 std::ostream &operator<<(std::ostream &out, Transaction transaction) {
-
-//    out << "\nId: " << transaction.m_id
-//        << "\nFrom: " << transaction.m_from
-//        << "\nTo: " << transaction.m_to
-//        << "\nTransaction hash: " << transaction.m_hash
-//        << "\nAmount: " << transaction.m_amount
-//        << "\nTimestamp: " << transaction.m_timestamp << std::endl;
 
     out << std::left << "$" << std::setw(8)
         << transaction.m_amount << " Hash: " << transaction.m_hash << " From: " << transaction.m_from << " -> "

@@ -105,6 +105,7 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
     genUsers(users);
     genPool(users, pool);
+
     std::vector<User> oldUsers(users);
 
     std::vector<User> tempUsers(users);
@@ -113,11 +114,12 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
     for (int i = 0; !pool.empty(); i++) {
 
-        char blockName = 'a';
-        int maxNonce = 10000;
         bool isMined = false;
+        int maxNonce = 10000;
 
         while (!isMined) {
+
+            char blockName = 'a';
 
             for (int j = 0; j < CANDIDATES; j++) {
 
@@ -132,7 +134,7 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
                     fout.close();
 
                     chain.appendBlock(block);
-                    std::cout << "Mined block " << blockName << std::endl;
+                    std::cout << "Mined " << i << " block (" << blockName << ")" << std::endl;
 
                     isMined = true;
                     break;
@@ -148,10 +150,12 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
             }
         }
     }
-//
-//    std::cout << "User details:" << std::endl;
-//    for (int i = 0; i < users.size(); ++i) {
-//        std::cout << oldUsers[i].getName() << " " << oldUsers[i].getPublicKey() << " | $" << oldUsers[i].getBalance()
-//                  << " -> $" << users[i].getBalance() << std::endl;
-//    }
+
+    std::cout << "\nUser details:" << std::endl;
+
+    for (int i = 0; i < users.size(); ++i) {
+        std::cout << "\nName: " << users[i].getName()
+                  << "\nPublic key: " << users[i].getPublicKey()
+                  << "\nBalance: " << oldUsers[i].getBalance() << " -> " << users[i].getBalance() << std::endl;
+    }
 }

@@ -29,8 +29,6 @@ public:
 
     void setAmount(double amount);
 
-    int getId() const;
-
     std::string getRecipient() const;
 
     std::string getSender() const;
@@ -43,6 +41,6 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
 
-//    ~Transaction() = default;
+    ~Transaction() = default;
 
 };
