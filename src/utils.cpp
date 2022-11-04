@@ -112,35 +112,40 @@ std::vector<Transaction> processTransactions(std::vector<Transaction> &pool, std
     }
 }
 
-void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users, bool debug = false) {
+void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users) {
+
+    std::filesystem::create_directories("blocks");
 
     genUsers(users);
     genPool(users, pool);
     std::vector<User> oldUsers(users);
 
-    while (!pool.empty()) {
+    for (int i = 0; !pool.empty(); i++) {
         std::vector<Transaction> newPool;
         std::vector<Block> blocks;
         char blockName = 'a';
         int maxNonce = 10000;
 
         for (int j = 0; j < 5; ++j)
+
             blocks.emplace_back(chain.getPrevHash(), processTransactions(pool, users));
 
-        volatile bool flag = false;
         for (Block block: blocks) {
 
-            if (flag) continue;
-
             if (block.mine(maxNonce)) {
+
                 purgeTransactions(block.getData(), pool);
+
+                std::ofstream fout("blocks/block" + std::to_string(i) + ".txt");
+                fout << block;
+                fout.close();
+
                 chain.appendBlock(block);
-                if (debug) {
-                    std::cout << "Mined block " << blockName << std::endl;
-                    std::cout << block << std::string(13, '-') << std::endl;
-                }
+                std::cout << "Mined block " << blockName << std::endl;
                 break;
+
             } else {
+
                 blockName++;
                 maxNonce *= 2;
 

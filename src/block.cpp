@@ -18,27 +18,25 @@ std::string Block::buildMerkleTree() {
 
     std::vector<std::string> merkle;
 
-    for (auto &tx: m_data) {
+    for (auto &tx: m_data)
         merkle.push_back(tx.getHash());
-    }
 
-    if (merkle.empty()) {
+    if (merkle.empty())
         return "null";
-    }
 
-    if (merkle.size() == 1) {
+    if (merkle.size() == 1)
         return merkle[0];
-    }
+
 
     while (merkle.size() != 1) {
         std::vector<std::string> temp;
 
-        if (merkle.size() % 2 != 0) {
+        if (merkle.size() % 2 != 0)
             merkle.push_back(merkle.back());
-        }
-        for (size_t i = 0; i < merkle.size(); i += 2) {
+
+        for (size_t i = 0; i < merkle.size(); i += 2)
             temp.push_back(hash(hash(merkle[i] + merkle[i + 1])));
-        }
+
         merkle = temp;
     }
     return merkle[0];
@@ -92,7 +90,7 @@ bool Block::mine(int maxNonce) {
 
 std::ostream &operator<<(std::ostream &out, Block block) {
 
-    out << "\nBlock hash: " << block.m_blockHash
+    out << "Block hash: " << block.m_blockHash
         << "\nPrevious hash: " << block.m_prevHash
         << "\nMerkle root: " << block.m_merkleRoot
         << "\nTimestamp: " << block.m_timestamp
@@ -100,9 +98,9 @@ std::ostream &operator<<(std::ostream &out, Block block) {
         << "\nDifficulty: " << DIFFICULTY_TARGET
         << "\nNumber of transactions: " << block.m_data.size() << std::endl;
 
-    std::cout << "\nTransaction list: " << std::endl;
+    out << "\nTransaction list: " << std::endl;
     for (Transaction transaction: block.m_data)
-        std::cout << transaction << std::endl;
+        out << transaction << std::endl;
 
     return out;
 
