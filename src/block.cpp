@@ -65,7 +65,7 @@ std::string Block::hashBlock() {
 
 }
 
-bool Block::mine(int maxNonce) {
+bool Block::mine(bool flag) {
 
     std::string targetStr(DIFFICULTY_TARGET, '0');
 
@@ -77,7 +77,7 @@ bool Block::mine(int maxNonce) {
 
         m_nonce++;
 
-        if (m_nonce > maxNonce)
+        if (flag)
             return false;
     }
 

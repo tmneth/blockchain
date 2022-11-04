@@ -9,6 +9,9 @@
 #include <fstream>
 #include <filesystem>
 
+#include <omp.h>
+#include <unistd.h>
+
 #include "user.h"
 #include "transaction.h"
 #include "blockchain.h"

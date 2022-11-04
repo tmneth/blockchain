@@ -29,7 +29,7 @@ public:
 
     std::string hashBlock();
 
-    bool mine(int maxNonce);
+    bool mine(bool flag);
 
     std::string buildMerkleTree();
 

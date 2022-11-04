@@ -108,24 +108,27 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
     std::vector<User> oldUsers(users);
 
-    std::vector<User> tempUsers(users);
-    std::vector<Transaction> tempPool(pool);
-
 
     for (int i = 0; !pool.empty(); i++) {
 
-        bool isMined = false;
-        int maxNonce = 10000;
+        volatile bool flag = false;
 
-        while (!isMined) {
+#pragma omp parallel for shared(flag) num_threads(THREAD_NUM)
+        for (int j = 0; j < THREAD_NUM; j++) {
+            
+            if (flag) continue;
 
-            char blockName = 'a';
+            std::vector<User> tempUsers(users);
+            std::vector<Transaction> tempPool(pool);
 
-            for (int j = 0; j < CANDIDATES; j++) {
+            Block block(chain.getPrevHash(), selectTransactions(tempPool, tempUsers));
 
-                Block block(chain.getPrevHash(), selectTransactions(tempPool, tempUsers));
+            if (block.mine(flag) && !flag) {
 
-                if (block.mine(maxNonce)) {
+                flag = true;
+
+#pragma omp critical
+                {
                     pool = tempPool;
                     users = tempUsers;
 
@@ -134,19 +137,8 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
                     fout.close();
 
                     chain.appendBlock(block);
-                    std::cout << "Mined " << i << " block (" << blockName << ")" << std::endl;
-
-                    isMined = true;
-                    break;
-                } else {
-                    tempPool = pool;
-                    tempUsers = users;
-                    blockName++;
-                    continue;
+                    std::cout << "Thread " << omp_get_thread_num() << " mined " << i << " block" << std::endl;
                 }
-            }
-            if (!isMined) {
-                maxNonce *= 2;
             }
         }
     }
