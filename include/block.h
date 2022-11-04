@@ -27,8 +27,6 @@ public:
 
     std::string getBlockHash() const;
 
-    std::vector<Transaction> getData() const;
-
     std::string hashBlock();
 
     bool mine(int maxNonce);

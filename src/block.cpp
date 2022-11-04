@@ -16,28 +16,32 @@ std::string Block::buildMerkleTree() {
 
     MYSHA hash;
 
+    std::string node;
+
     std::vector<std::string> merkle;
 
-    for (auto &tx: m_data)
+    for (Transaction &tx: m_data)
         merkle.push_back(tx.getHash());
 
     if (merkle.empty())
-        return "null";
+        return "null_hash";
 
     if (merkle.size() == 1)
         return merkle[0];
 
-
-    while (merkle.size() != 1) {
+    while (merkle.size() > 1) {
         std::vector<std::string> temp;
 
         if (merkle.size() % 2 != 0)
             merkle.push_back(merkle.back());
 
-        for (size_t i = 0; i < merkle.size(); i += 2)
-            temp.push_back(hash(hash(merkle[i] + merkle[i + 1])));
+        for (int i = 0; i < merkle.size(); i += 2) {
+            node = hash(hash(merkle[i] + merkle[i + 1]));
+            temp.push_back(node);
+        }
 
         merkle = temp;
+
     }
     return merkle[0];
 
@@ -48,12 +52,6 @@ std::string Block::getBlockHash() const {
     return m_blockHash;
 
 };
-
-std::vector<Transaction> Block::getData() const {
-
-    return m_data;
-
-}
 
 std::string Block::hashBlock() {
 
