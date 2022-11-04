@@ -8,15 +8,8 @@ void Blockchain::appendBlock(const Block &block) {
 
 std::string Blockchain::getPrevHash() {
 
-    return m_chain[m_chain.size() - 1].getBlockHash();
-
-}
-
-void Blockchain::getBlockInfo(int blocknumber) {
-
-    if (blocknumber >= m_chain.size() || blocknumber < 0)
-        std::cout << "Entered number is out of range." << std::endl;
-    else
-        std::cout << m_chain[blocknumber] << std::endl;
+    return m_chain.empty()
+           ? "AEEBAD4A796FCC2E15DC4C6061B45ED9B373F26ADFC798CA7D2D8CC58182718E"
+           : m_chain[m_chain.size() - 1].getBlockHash();
 
 }

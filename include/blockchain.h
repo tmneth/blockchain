@@ -14,15 +14,7 @@ private:
 
 public:
 
-    Blockchain() {
-        std::vector<Transaction> pool(0);
-        Block genesisBlock(
-                std::string(16, 0),
-                pool
-        );
-        genesisBlock.mine(false);
-        appendBlock(genesisBlock);
-    }
+    Blockchain() = default;
 
     void appendBlock(const Block &block);
 
