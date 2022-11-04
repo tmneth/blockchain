@@ -65,7 +65,7 @@ std::string Block::hashBlock() {
 
 }
 
-bool Block::mine(bool flag) {
+bool Block::mine(bool isMined) {
 
     std::string targetStr(DIFFICULTY_TARGET, '0');
 
@@ -77,8 +77,10 @@ bool Block::mine(bool flag) {
 
         m_nonce++;
 
-        if (flag)
+#pragma omp flush(isMined)
+        if (isMined)
             return false;
+        
     }
 
     m_blockHash = hash;

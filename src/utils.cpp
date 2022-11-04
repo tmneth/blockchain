@@ -111,21 +111,22 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
     for (int i = 0; !pool.empty(); i++) {
 
-        volatile bool flag = false;
+        bool isMined = false;
 
-#pragma omp parallel for shared(flag) num_threads(THREAD_NUM)
+#pragma omp parallel for shared(isMined) num_threads(THREAD_NUM)
         for (int j = 0; j < THREAD_NUM; j++) {
-            
-            if (flag) continue;
+
+            if (isMined) continue;
 
             std::vector<User> tempUsers(users);
             std::vector<Transaction> tempPool(pool);
 
             Block block(chain.getPrevHash(), selectTransactions(tempPool, tempUsers));
 
-            if (block.mine(flag) && !flag) {
+            if (block.mine(isMined)) {
 
-                flag = true;
+#pragma omp flush(isMined)
+                isMined = true;
 
 #pragma omp critical
                 {
