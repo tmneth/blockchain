@@ -1,6 +1,3 @@
-#include <random>
-#include <set>
-#include <utility>
 #include "block.h"
 
 Block::Block(std::string prevHash, std::vector<Transaction> pool) {
@@ -73,14 +70,14 @@ bool Block::mine(bool isMined) {
 
     while (hash.substr(0, DIFFICULTY_TARGET) != targetStr) {
 
+#pragma omp flush(isMined)
+        if (isMined)
+            return false;
+
         hash = hashBlock();
 
         m_nonce++;
 
-#pragma omp flush(isMined)
-        if (isMined)
-            return false;
-        
     }
 
     m_blockHash = hash;

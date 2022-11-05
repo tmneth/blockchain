@@ -123,7 +123,7 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
             Block block(chain.getPrevHash(), selectTransactions(tempPool, tempUsers));
 
-            if (block.mine(isMined)) {
+            if (block.mine(isMined) && !isMined) {
 
 #pragma omp flush(isMined)
                 isMined = true;

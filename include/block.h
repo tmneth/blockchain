@@ -9,6 +9,8 @@
 #include "hash.h"
 #include "user.h"
 #include "constants.h"
+#include <utility>
+#include <random>
 
 class Block {
 
