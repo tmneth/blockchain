@@ -24,8 +24,8 @@ Thread 0 mined 1 block
 
 [...]
 
-Thread 2 mined 41 block
-Thread 3 mined 41 block
+Thread 1 mined 42 block
+Thread 2 mined 43 block
 ```
 Afterwards, updated balances are printed
 ```
