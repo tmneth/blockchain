@@ -1,11 +1,5 @@
 #include "transaction.h"
 
-void Transaction::setId(int id) {
-
-    m_id = id;
-
-}
-
 void Transaction::setRecipient(std::string_view hash) {
 
     m_to = hash;
@@ -61,13 +55,18 @@ double Transaction::getAmount() const {
 
 }
 
-std::ostream &operator<<(std::ostream &out, Transaction transaction) {
+Json::Value Transaction::toJSON() {
 
-    out << std::left << "$" << std::setw(8)
-        << transaction.m_amount << " Hash: " << transaction.m_hash << " From: " << transaction.m_from << " -> "
-        << transaction.m_to << " | Time: "
-        << transaction.m_timestamp;
+    Json::Value transactions;
 
-    return out;
+    Json::Value rootJsonValue;
+
+    rootJsonValue["txid"] = m_hash;
+    rootJsonValue["amount"] = m_amount;
+    rootJsonValue["from"] = m_from;
+    rootJsonValue["to"] = m_to;
+    rootJsonValue["time"] = (long long)m_timestamp;
+
+    return rootJsonValue;
 
 }

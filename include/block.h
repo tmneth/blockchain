@@ -11,6 +11,7 @@
 #include "constants.h"
 #include <utility>
 #include <random>
+#include <jsoncpp/json/json.h>
 
 class Block {
 
@@ -20,14 +21,17 @@ private:
     std::string m_blockHash{};
     std::string m_merkleRoot{};
     int m_nonce{};
+    int m_height{};
     time_t m_timestamp{};
     std::vector<Transaction> m_data;
 
 public:
 
-    Block(std::string prevHash, std::vector<Transaction> pool);
+    Block(std::string prevHash, std::vector<Transaction> pool, int height);
 
     std::string getBlockHash() const;
+
+    std::vector<Transaction> getData() const;
 
     std::string hashBlock();
 
@@ -35,7 +39,7 @@ public:
 
     std::string buildMerkleTree();
 
-    friend std::ostream &operator<<(std::ostream &out, Block block);
+    Json::Value toJSON();
 
     ~Block() = default;
 

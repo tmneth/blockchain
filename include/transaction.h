@@ -3,12 +3,13 @@
 #include <iostream>
 #include "hash.h"
 #include <iomanip>
+#include <jsoncpp/json/json.h>
+
 
 class Transaction {
 
 private:
 
-    int m_id{};
     std::string m_to{};
     std::string m_from{};
     std::string m_hash{};
@@ -18,8 +19,6 @@ private:
 public:
 
     Transaction() : m_timestamp(time(0)) {};
-
-    void setId(int id);
 
     void setRecipient(std::string_view hash);
 
@@ -39,7 +38,7 @@ public:
 
     time_t getTimestamp() const;
 
-    friend std::ostream &operator<<(std::ostream &out, Transaction transaction);
+    Json::Value toJSON();
 
     ~Transaction() = default;
 

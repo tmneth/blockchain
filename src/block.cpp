@@ -1,9 +1,10 @@
 #include "block.h"
 
-Block::Block(std::string prevHash, std::vector<Transaction> pool) {
+Block::Block(std::string prevHash, std::vector<Transaction> pool, int height) {
 
     m_prevHash = std::move(prevHash);
     m_data = pool;
+    m_height = height;
     m_merkleRoot = buildMerkleTree();
     m_timestamp = time(nullptr);
 
@@ -50,6 +51,12 @@ std::string Block::getBlockHash() const {
 
 };
 
+std::vector<Transaction> Block::getData() const {
+
+    return m_data;
+
+};
+
 std::string Block::hashBlock() {
 
     MYSHA hash;
@@ -85,20 +92,25 @@ bool Block::mine(bool isMined) {
 
 }
 
-std::ostream &operator<<(std::ostream &out, Block block) {
+Json::Value Block::toJSON() {
 
-    out << "Block hash: " << block.m_blockHash
-        << "\nPrevious hash: " << block.m_prevHash
-        << "\nMerkle root: " << block.m_merkleRoot
-        << "\nTimestamp: " << block.m_timestamp
-        << "\nNonce: " << block.m_nonce
-        << "\nDifficulty: " << DIFFICULTY_TARGET
-        << "\nNumber of transactions: " << block.m_data.size() << std::endl;
+    Json::Value transactions;
 
-    out << "\nTransaction list: " << std::endl;
-    for (Transaction transaction: block.m_data)
-        out << transaction << std::endl;
+    for (int i = 0; i < m_data.size(); ++i)
+        transactions[i] = Json::Value(m_data[i].getHash());
 
-    return out;
+    Json::Value rootJsonValue;
+
+    rootJsonValue["hash"] =  m_blockHash;
+    rootJsonValue["merkleroot"] =  m_merkleRoot;
+    rootJsonValue["previousblockhash"] =  m_prevHash;
+    rootJsonValue["nonce"] =  m_nonce;
+    rootJsonValue["height"] =  m_height;
+    rootJsonValue["difficulty"] =  DIFFICULTY_TARGET;
+    rootJsonValue["time"] =  (long long)m_timestamp;
+    rootJsonValue["tx"] = transactions;
+    rootJsonValue["nTx"] = (int)m_data.size();
+
+    return rootJsonValue;
 
 }

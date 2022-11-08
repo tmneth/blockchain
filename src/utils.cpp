@@ -33,8 +33,6 @@ void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
 
         Transaction transaction;
 
-        transaction.setId(i);
-
         transaction.setAmount(amount);
 
         transaction.setSender(users[randUser1].getPublicKey());
@@ -103,11 +101,15 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
     std::filesystem::create_directories("blocks");
 
+    Json::StreamWriterBuilder builder;
+    builder["commentStyle"] = "None";
+    builder["indentation"] = "   ";
+    std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
     genUsers(users);
     genPool(users, pool);
 
     std::vector<User> oldUsers(users);
-
 
     for (int i = 0; !pool.empty(); i++) {
 
@@ -121,7 +123,7 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
             std::vector<User> tempUsers(users);
             std::vector<Transaction> tempPool(pool);
 
-            Block block(chain.getPrevHash(), selectTransactions(tempPool, tempUsers));
+            Block block(chain.getPrevHash(), selectTransactions(tempPool, tempUsers), i);
 
             if (block.mine(isMined) && !isMined) {
 
@@ -133,9 +135,17 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
                     pool = tempPool;
                     users = tempUsers;
 
-                    std::ofstream fout("blocks/block" + std::to_string(i) + ".txt");
-                    fout << block;
-                    fout.close();
+                    std::filesystem::create_directories("blocks/block" + std::to_string(i));
+                    std::ofstream writeBlock("blocks/block" + std::to_string(i) + "/block.json");
+                    writer->write(block.toJSON(), &writeBlock);
+                    writeBlock.close();
+
+                    for (int x = 0; x < block.getData().size(); ++x) {
+                        std::filesystem::create_directories("blocks/tx" + std::to_string(i));
+                        std::ofstream writeTx("blocks/block" + std::to_string(i) + "/tx" + std::to_string(x) + ".json");
+                        writer->write(block.getData()[x].toJSON(), &writeTx);
+                        writeTx.close();
+                    }
 
                     chain.appendBlock(block);
                     std::cout << "Thread " << omp_get_thread_num() << " mined " << i << " block" << std::endl;
@@ -151,4 +161,9 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
                   << "\nPublic key: " << users[i].getPublicKey()
                   << "\nBalance: " << oldUsers[i].getBalance() << " -> " << users[i].getBalance() << std::endl;
     }
+
+    std::ofstream writeBlock("blockchaininfo.json");
+    writer->write(chain.toJSON(), &writeBlock);
+    writeBlock.close();
+
 }

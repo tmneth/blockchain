@@ -13,3 +13,75 @@ std::string Blockchain::getPrevHash() {
            : m_chain[m_chain.size() - 1].getBlockHash();
 
 }
+
+void Blockchain::getBlockchaininfo(int &blocks) {
+
+    Json::Value root;
+    std::ifstream readChain("blockchaininfo.json");
+    readChain >> root;
+    readChain.close();
+    blocks = root.get("blocks", 0).asInt();
+
+}
+
+void Blockchain::getBlockchaininfo() {
+
+    Json::Value root;
+    std::ifstream readChain("blockchaininfo.json");
+    readChain >> root;
+    readChain.close();
+    std::cout << root << std::endl;
+
+}
+
+void Blockchain::getBlock(std::string blockhash) {
+
+    int blocks;
+    Json::Value root;
+    getBlockchaininfo(blocks);
+
+    for (int i = 0; i < blocks; i++) {
+        std::ifstream readBlock("blocks/block" + std::to_string(i) + "/block.json");
+        readBlock >> root;
+        if (root["hash"] == blockhash) {
+            std::cout << root << std::endl;
+            return;
+        }
+    }
+    std::cout << "No block with provided hash was found" << std::endl;
+}
+
+void Blockchain::getRawtransaction(std::string txid) {
+    int blocks;
+    Json::Value root;
+    getBlockchaininfo(blocks);
+    for (int i = 0; i < blocks; i++) {
+        std::ifstream readBlock("blocks/block" + std::to_string(i) + "/block.json");
+        readBlock >> root;
+        readBlock.close();
+        int txNum = root.get("nTx", 0).asInt();
+        for (int j = 0; j < txNum; ++j) {
+            std::ifstream readTx("blocks/block" + std::to_string(i) + "/tx" + std::to_string(j) + ".json");
+            readTx >> root;
+            if (root["txid"] == txid) {
+                std::cout << root << std::endl;
+                return;
+            }
+        }
+    }
+    std::cout << "No transaction with provided txid was found" << std::endl;
+
+}
+
+Json::Value Blockchain::toJSON() {
+
+    Json::Value rootJsonValue;
+
+    rootJsonValue["name"] = m_name;
+    rootJsonValue["blocks"] = (int) m_chain.size();
+    rootJsonValue["headers"] = (int) m_chain.size();
+    rootJsonValue["difficulty"] = DIFFICULTY_TARGET;
+
+    return rootJsonValue;
+
+}
