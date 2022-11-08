@@ -8,7 +8,7 @@ double genRandAmount() {
     return amount(mt);
 }
 
-void genUsers(std::vector<User> &users) {
+void genUsers(std::vector <User> &users) {
 
     for (int i = 0; i < USER_NUM; ++i) {
         User user("user" + std::to_string(i), genRandAmount());
@@ -18,7 +18,7 @@ void genUsers(std::vector<User> &users) {
 
 }
 
-void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
+void genPool(std::vector <User> &users, std::vector <Transaction> &pool) {
 
     std::random_device device;
     std::mt19937 mt(device());
@@ -45,7 +45,7 @@ void genPool(std::vector<User> &users, std::vector<Transaction> &pool) {
 
 }
 
-int findUser(std::string publicKey, std::vector<User> &users) {
+int findUser(std::string publicKey, std::vector <User> &users) {
 
     auto it = find_if(users.begin(), users.end(),
                       [&publicKey](User &user) { return user.getPublicKey() == publicKey; });
@@ -55,9 +55,9 @@ int findUser(std::string publicKey, std::vector<User> &users) {
 
 }
 
-std::vector<Transaction> selectTransactions(std::vector<Transaction> &pool, std::vector<User> &users) {
+std::vector <Transaction> selectTransactions(std::vector <Transaction> &pool, std::vector <User> &users) {
 
-    std::vector<Transaction> newPool;
+    std::vector <Transaction> newPool;
     MYSHA hash;
 
     std::random_device device;
@@ -97,19 +97,19 @@ std::vector<Transaction> selectTransactions(std::vector<Transaction> &pool, std:
     return newPool;
 }
 
-void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vector<User> &users) {
+void initBlockchain(Blockchain &chain, std::vector <Transaction> pool, std::vector <User> &users) {
 
     std::filesystem::create_directories("blocks");
 
     Json::StreamWriterBuilder builder;
     builder["commentStyle"] = "None";
     builder["indentation"] = "   ";
-    std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+    std::unique_ptr <Json::StreamWriter> writer(builder.newStreamWriter());
 
     genUsers(users);
     genPool(users, pool);
 
-    std::vector<User> oldUsers(users);
+    std::vector <User> oldUsers(users);
 
     for (int i = 0; !pool.empty(); i++) {
 
@@ -120,8 +120,8 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
 
             if (isMined) continue;
 
-            std::vector<User> tempUsers(users);
-            std::vector<Transaction> tempPool(pool);
+            std::vector <User> tempUsers(users);
+            std::vector <Transaction> tempPool(pool);
 
             Block block(chain.getPrevHash(), selectTransactions(tempPool, tempUsers), i);
 
@@ -141,7 +141,6 @@ void initBlockchain(Blockchain &chain, std::vector<Transaction> pool, std::vecto
                     writeBlock.close();
 
                     for (int x = 0; x < block.getData().size(); ++x) {
-                        std::filesystem::create_directories("blocks/tx" + std::to_string(i));
                         std::ofstream writeTx("blocks/block" + std::to_string(i) + "/tx" + std::to_string(x) + ".json");
                         writer->write(block.getData()[x].toJSON(), &writeTx);
                         writeTx.close();

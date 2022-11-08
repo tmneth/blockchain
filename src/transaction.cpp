@@ -65,7 +65,7 @@ Json::Value Transaction::toJSON() {
     rootJsonValue["amount"] = m_amount;
     rootJsonValue["from"] = m_from;
     rootJsonValue["to"] = m_to;
-    rootJsonValue["time"] = (long long)m_timestamp;
+    rootJsonValue["time"] = (long long) m_timestamp;
 
     return rootJsonValue;
 

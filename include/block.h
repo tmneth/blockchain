@@ -23,15 +23,15 @@ private:
     int m_nonce{};
     int m_height{};
     time_t m_timestamp{};
-    std::vector<Transaction> m_data;
+    std::vector <Transaction> m_data;
 
 public:
 
-    Block(std::string prevHash, std::vector<Transaction> pool, int height);
+    Block(std::string prevHash, std::vector <Transaction> pool, int height);
 
     std::string getBlockHash() const;
 
-    std::vector<Transaction> getData() const;
+    std::vector <Transaction> getData() const;
 
     std::string hashBlock();
 

@@ -17,8 +17,8 @@ void showHelpMessage() {
 int main(int argc, char *argv[]) {
 
     Blockchain chain;
-    std::vector<Transaction> pool;
-    std::vector<User> users;
+    std::vector <Transaction> pool;
+    std::vector <User> users;
 
     if (argc == 1) {
         showHelpMessage();

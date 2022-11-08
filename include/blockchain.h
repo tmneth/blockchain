@@ -11,7 +11,7 @@ class Blockchain {
 
 private:
 
-    std::vector<Block> m_chain;
+    std::vector <Block> m_chain;
     std::string m_name{"main"};
 
 public:

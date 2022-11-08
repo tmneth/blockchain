@@ -1,6 +1,6 @@
 #include "block.h"
 
-Block::Block(std::string prevHash, std::vector<Transaction> pool, int height) {
+Block::Block(std::string prevHash, std::vector <Transaction> pool, int height) {
 
     m_prevHash = std::move(prevHash);
     m_data = pool;
@@ -16,7 +16,7 @@ std::string Block::buildMerkleTree() {
 
     std::string node;
 
-    std::vector<std::string> merkle;
+    std::vector <std::string> merkle;
 
     for (Transaction &tx: m_data)
         merkle.push_back(tx.getHash());
@@ -28,7 +28,7 @@ std::string Block::buildMerkleTree() {
         return merkle[0];
 
     while (merkle.size() > 1) {
-        std::vector<std::string> temp;
+        std::vector <std::string> temp;
 
         if (merkle.size() % 2 != 0)
             merkle.push_back(merkle.back());
@@ -51,7 +51,7 @@ std::string Block::getBlockHash() const {
 
 };
 
-std::vector<Transaction> Block::getData() const {
+std::vector <Transaction> Block::getData() const {
 
     return m_data;
 
@@ -101,15 +101,15 @@ Json::Value Block::toJSON() {
 
     Json::Value rootJsonValue;
 
-    rootJsonValue["hash"] =  m_blockHash;
-    rootJsonValue["merkleroot"] =  m_merkleRoot;
-    rootJsonValue["previousblockhash"] =  m_prevHash;
-    rootJsonValue["nonce"] =  m_nonce;
-    rootJsonValue["height"] =  m_height;
-    rootJsonValue["difficulty"] =  DIFFICULTY_TARGET;
-    rootJsonValue["time"] =  (long long)m_timestamp;
+    rootJsonValue["hash"] = m_blockHash;
+    rootJsonValue["merkleroot"] = m_merkleRoot;
+    rootJsonValue["previousblockhash"] = m_prevHash;
+    rootJsonValue["nonce"] = m_nonce;
+    rootJsonValue["height"] = m_height;
+    rootJsonValue["difficulty"] = DIFFICULTY_TARGET;
+    rootJsonValue["time"] = (long long) m_timestamp;
     rootJsonValue["tx"] = transactions;
-    rootJsonValue["nTx"] = (int)m_data.size();
+    rootJsonValue["nTx"] = (int) m_data.size();
 
     return rootJsonValue;
 

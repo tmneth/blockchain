@@ -22,41 +22,47 @@ g++ src/*.cpp -o 'main' && ./main
 
 ```json
 {
-        "name" : "main",
-        "blocks" : 44,
-        "headers" : 44,
-        "difficulty" : 5
+  "name": "main",
+  "blocks": 46,
+  "headers": 46,
+  "difficulty": 1
 }
 ```
 
 ### getblock blockhash
+
 ```json
 {
-   "hash" : "0aa1fd840ad262806ab488a0c8687094f0129928395c2578b37c1e043d4ddefc",
-   "height" : 21,
-   "merkleroot" : "3ba03af4c8ff1554df81a1000150b8c0b192efb0b471ac04389ffd384e5f4364",
-   "nTx" : 4,
-   "nonce" : 51,
-   "difficulty" : 5,
-   "previousblockhash" : "0f0a74a88a86edc02313fac4740bbfb0fd8d995c7d486e3c13f50f90f5c9d7cc",
-   "time" : 1667921184,
-   "tx" : 
-   [
-      "4047066cc6a3d5d8d5342108a6e4969c007610bc43dd1ad4201aa7045329ffec",
-      "003060f05ad2ed4a85a059e4082cd2269136e27cbae2a660586e597439c5d6ac",
-      "570e58acc1f501c44add20788938dacc1fcde9c4fd56b1dc79a0bf282e901f98",
-      "4a54d640ea3f6e9691cc2a86b220df68f6c93bd4d2af82941d44f3185db423f8"
-   ]
+  "hash": "03cc398c40f548c0597d536c13320d54fb18d6ccabea7a74c198f26421cce018",
+  "height": 44,
+  "merkleroot": "c5896de036552910d0418fb0eb8bf89c0670b0f8b1d730487d9e64fc1075f2f8",
+  "nTx": 9,
+  "nonce": 11,
+  "difficulty": 1,
+  "previousblockhash": "047885246d82510c1eda646469777a784e290238b8dc17b0c6fa3ec03f46eb90",
+  "time": 1667930841,
+  "tx": [
+    "e863675c72a63104c303ff40e28b0bb0b46a08f8b4ca1690252c3ecc984305d0",
+    "ca5ed564803f28f6936122a42c6ae72aacb5a9dc8ab6a870ea2fb0fcf7aa84ac",
+    "e43ca0d494d73d44664f2bd0f60098347b0b7bfce2adfed8adf748742cc1d104",
+    "3e175d388b86ddbc0361ffb499b117043741660c74eb3c68efe8b7748164f830",
+    "2a2bc84cdfde24d0ef0ebf5c4733f1d87814ab640e75b2ac1f2924a82c75d210",
+    "9d0a707c3e61e3480e68f9a404ef9e0471073c9060362168d4850484156b51f8",
+    "355977c40a1e66740d2b2340cc05531cf6ff83542741b63c85d7900cd31288f8",
+    "649f9dd8b1b96c6887cb7c8cd72c52744ad81aa8850da7e46d1179349f383d4c",
+    "02d94a487c190b44123366903eb123e0a3b6ed8cb72c50743afcf59c41f22dcc"
+  ]
 }
 ```
 
 ### getrawtransaction txid
+
 ```json
 {
-        "txid" : "6245c1889badf9ec06b04fa444567d489811f2e8e58783f4a28f48444a434e0c",
-        "amount" : 74388.035890019266,
-        "from" : "ac4d124c3ef7934c86d44110f4eedb7c797748d8f7a432c4488dc3a414723b58",
-        "to" : "396f07dcc70519149596a17c6b071270c6aa7b7c318b0090b33caae80f80c084",
-        "time" : 1667927989,
+  "txid": "22f8fb70615650a0c4f3f958333ec59cc6deca7056c97038f9eee6c44e7b7ecc",
+  "amount": 52737.662490191993,
+  "from": "6fffe7f8b57207b8fd2a4950f6edb7149f7a3060168c506ca702f8d8d0d3070c",
+  "time": 1667930839,
+  "to": "8dee0f9c405d244840404ab8ee9cab9cf2a5379844d13dbcd6d5410c6652c670"
 }
 ```
