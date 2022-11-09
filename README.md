@@ -13,7 +13,7 @@ git clone https://github.com/tmneth/blockchain.git
 Compile the files
 
 ```
-g++ src/*.cpp -o 'main' && ./main
+cmake -B _builds && make -C _builds
 ```
 
 ## Merkle Tree
