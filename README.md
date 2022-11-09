@@ -16,26 +16,40 @@ Compile the files
 g++ src/*.cpp -o 'main' && ./main
 ```
 
+## Merkle Tree
+
+This blockchain uses slightly modified Merkle Tree implementation from [libbitcoin-system](https://github.com/libbitcoin/libbitcoin-system)
+
+### What's different?
+
+- Function return value is changed to std::string, therefore `bc::hash_digest` elements are base16 encoded
+- To form `bc::hash_list`, hash of every transaction is converted into 65 char array that is subsequently converted to base16 literal
+- Finally, `bc::hash_digest` value is then pushed to `bc::hash_list`
+
 ## Command-line interface
 
 - `help` - Displays available commands.
 - `initchain` - initializes and serializes blockchain.
 - `getblockchaininfo` - Returns an object containing various state info.
 - `getblock <hash>` - Returns information about the block with the given hash.
-- `getrawtransaction  <txid>` - Returns raw transaction representation for given transaction id.
+- `getrawtransaction <txid>` - Returns raw transaction representation for given transaction id.
 
 ### Various methods with examples
+
 `$ ./bin getblockchaininfo`
+
 ```json
 {
-  "chain" : "main",
-  "bestblockhash" : "0e1d2c3cb4f2db98a4fecd3c14127a184a19ee4c37e3b2d0f2e59c64b70e0d10",
-  "blocks" : 42,
-  "headers" : 42,
-  "difficulty" : 1
+  "chain": "main",
+  "bestblockhash": "0e1d2c3cb4f2db98a4fecd3c14127a184a19ee4c37e3b2d0f2e59c64b70e0d10",
+  "blocks": 42,
+  "headers": 42,
+  "difficulty": 1
 }
 ```
+
 `$ ./bin getblock 03cc398c40f548c0597d536c13320d54fb18d6ccabea7a74c198f26421cce018`
+
 ```json
 {
   "hash": "03cc398c40f548c0597d536c13320d54fb18d6ccabea7a74c198f26421cce018",
@@ -59,7 +73,9 @@ g++ src/*.cpp -o 'main' && ./main
   ]
 }
 ```
+
 `$ ./bin getrawtransaction 22f8fb70615650a0c4f3f958333ec59cc6deca7056c97038f9eee6c44e7b7ecc`
+
 ```json
 {
   "txid": "22f8fb70615650a0c4f3f958333ec59cc6deca7056c97038f9eee6c44e7b7ecc",

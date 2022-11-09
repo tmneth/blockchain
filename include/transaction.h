@@ -3,7 +3,7 @@
 #include <iostream>
 #include "hash.h"
 #include <iomanip>
-#include <json.h>
+#include <jsoncpp/json/json.h>
 
 
 class Transaction {

@@ -5,43 +5,8 @@ Block::Block(std::string prevHash, std::vector<Transaction> pool, int height) {
     m_prevHash = std::move(prevHash);
     m_data = pool;
     m_height = height;
-    m_merkleRoot = buildMerkleTree();
+    m_merkleRoot = buildMerkle(m_data);
     m_timestamp = time(nullptr);
-
-}
-
-std::string Block::buildMerkleTree() {
-
-    MYSHA hash;
-
-    std::string node;
-
-    std::vector<std::string> merkle;
-
-    for (Transaction &tx: m_data)
-        merkle.push_back(tx.getHash());
-
-    if (merkle.empty())
-        return "null_hash";
-
-    if (merkle.size() == 1)
-        return merkle[0];
-
-    while (merkle.size() > 1) {
-        std::vector<std::string> temp;
-
-        if (merkle.size() % 2 != 0)
-            merkle.push_back(merkle.back());
-
-        for (int i = 0; i < merkle.size(); i += 2) {
-            node = hash(hash(merkle[i] + merkle[i + 1]));
-            temp.push_back(node);
-        }
-
-        merkle = temp;
-
-    }
-    return merkle[0];
 
 }
 

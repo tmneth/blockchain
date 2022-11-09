@@ -6,12 +6,14 @@
 #include <algorithm>
 #include <vector>
 #include "transaction.h"
+#include <utility>
+#include <random>
+#include <jsoncpp/json/json.h>
+
 #include "hash.h"
 #include "user.h"
 #include "constants.h"
-#include <utility>
-#include <random>
-#include <json.h>
+#include "merkle.h"
 
 class Block {
 
@@ -36,8 +38,6 @@ public:
     std::string hashBlock();
 
     bool mine(bool flag);
-
-    std::string buildMerkleTree();
 
     Json::Value toJSON();
 
