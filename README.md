@@ -25,10 +25,8 @@ g++ src/*.cpp -o 'main' && ./main
 - `getrawtransaction  <txid>` - Returns raw transaction representation for given transaction id.
 
 ### Various methods with examples
-
+`$ ./bin getblockchaininfo`
 ```json
-$ ./bin getblockchaininfo
-
 {
   "chain" : "main",
   "bestblockhash" : "0e1d2c3cb4f2db98a4fecd3c14127a184a19ee4c37e3b2d0f2e59c64b70e0d10",
@@ -37,10 +35,8 @@ $ ./bin getblockchaininfo
   "difficulty" : 1
 }
 ```
-
+`$ ./bin getblock 03cc398c40f548c0597d536c13320d54fb18d6ccabea7a74c198f26421cce018`
 ```json
-$ ./bin getblock 03cc398c40f548c0597d536c13320d54fb18d6ccabea7a74c198f26421cce018
-
 {
   "hash": "03cc398c40f548c0597d536c13320d54fb18d6ccabea7a74c198f26421cce018",
   "height": 44,
@@ -63,10 +59,8 @@ $ ./bin getblock 03cc398c40f548c0597d536c13320d54fb18d6ccabea7a74c198f26421cce01
   ]
 }
 ```
-
+`$ ./bin getrawtransaction 22f8fb70615650a0c4f3f958333ec59cc6deca7056c97038f9eee6c44e7b7ecc`
 ```json
-$ ./bin getrawtransaction 22f8fb70615650a0c4f3f958333ec59cc6deca7056c97038f9eee6c44e7b7ecc
-
 {
   "txid": "22f8fb70615650a0c4f3f958333ec59cc6deca7056c97038f9eee6c44e7b7ecc",
   "amount": 52737.662490191993,
