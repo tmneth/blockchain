@@ -63,6 +63,7 @@ void Blockchain::getRawtransaction(std::string txid) {
         for (int j = 0; j < txNum; ++j) {
             std::ifstream readTx("blocks/block" + std::to_string(i) + "/tx" + std::to_string(j) + ".json");
             readTx >> root;
+            readTx.close();
             if (root["txid"] == txid) {
                 std::cout << root << std::endl;
                 return;
@@ -77,10 +78,11 @@ Json::Value Blockchain::toJSON() {
 
     Json::Value rootJsonValue;
 
-    rootJsonValue["name"] = m_name;
+    rootJsonValue["chain"] = m_name;
     rootJsonValue["blocks"] = (int) m_chain.size();
     rootJsonValue["headers"] = (int) m_chain.size();
     rootJsonValue["difficulty"] = DIFFICULTY_TARGET;
+    rootJsonValue["bestblockhash"] = m_chain[m_chain.size() - 1].getBlockHash();
 
     return rootJsonValue;
 

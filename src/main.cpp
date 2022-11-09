@@ -5,33 +5,31 @@ void showHelpMessage() {
 
     std::cerr
             << "Please use one of the following commands:\n"
-            << "help: Show this help message\n"
-            << "initchain: Initialize blockchain\n"
-            << "getblock <blockhash>: Retrieve information of a selected block\n"
-            << "getrawtransaction <txid>: Retrieve information of a selected transaction\n"
-            << "exit: Exit the program\n"
-            << std::endl;
+            << "help - Displays available commands.\n"
+            << "initchain - initializes and serializes blockchain.\n"
+            << "getblockchaininfo - Returns an object containing various state info.\n"
+            << "getblock <hash> - Returns information about the block with the given hash.\n"
+            << "getrawtransaction <txid> - Returns raw transaction representation for given transaction id.\n"
+            << "exit: Exits the program.";
 
 }
 
 int main(int argc, char *argv[]) {
 
     Blockchain chain;
-    std::vector <Transaction> pool;
-    std::vector <User> users;
+    std::vector<Transaction> pool;
+    std::vector<User> users;
 
-    if (argc == 1) {
-        showHelpMessage();
-        return 1;
-    }
+    if (!std::filesystem::exists("blockchaininfo.json"))
+        initBlockchain(chain, pool, users);
 
     for (int i = 0; i < argc; i++) {
 
         std::string arg = argv[i];
 
-        if (arg == "help") {
+        if (arg == "help" || argc == 1 || argc > 3) {
             showHelpMessage();
-            return 1;
+            return 127;
         } else if (arg == "initchain") {
             initBlockchain(chain, pool, users);
         } else if (arg == "getblockchaininfo") {
