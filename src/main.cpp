@@ -20,8 +20,7 @@ int main(int argc, char *argv[]) {
     std::vector<Transaction> pool;
     std::vector<User> users;
 
-    if (!std::filesystem::exists("blockchaininfo.json"))
-        initBlockchain(chain, pool, users);
+    bool blockchainExists = std::filesystem::exists("blockchaininfo.json");
 
     for (int i = 0; i < argc; i++) {
 
@@ -30,8 +29,8 @@ int main(int argc, char *argv[]) {
         if (arg == "help" || argc == 1 || argc > 3) {
             showHelpMessage();
             return 127;
-        } else if (arg == "initchain") {
-            initBlockchain(chain, pool, users);
+        } else if (arg == "initchain" || !blockchainExists) {
+            initBlockchain(chain, pool, users);;
         } else if (arg == "getblockchaininfo") {
             chain.getBlockchaininfo();
         } else if (arg == "getblock") {
@@ -43,7 +42,7 @@ int main(int argc, char *argv[]) {
         }
 
     }
-
+    
     return 0;
 
 }
