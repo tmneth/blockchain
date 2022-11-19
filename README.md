@@ -10,10 +10,10 @@ Clone the project
 git clone https://github.com/tmneth/blockchain.git
 ```
 
-Compile the files
+Build project
 
 ```
-cmake -B _builds && make -C _builds
+cmake -B build && make -C build
 ```
 
 ## Command-line interface
