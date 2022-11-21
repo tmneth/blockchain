@@ -10,11 +10,12 @@ Clone the project
 git clone https://github.com/tmneth/blockchain.git
 ```
 
-Build project
+Build the project
 
 ```
 cmake -B build && make -C build
 ```
+> The output binary is in ./build/bin
 
 ## Command-line interface
 
